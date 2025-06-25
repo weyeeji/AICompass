@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadData();
         populateSelectors();
         setupEventListeners();
+        setupMobileSupport();
         initMemoryChart();
         switchModelMode('preset');
         updateConditionalFields();
@@ -1339,6 +1340,70 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+    }
+
+    function setupMobileSupport() {
+        // 为所有问号图标添加点击事件，在移动设备上支持点击显示提示
+        const helpIcons = document.querySelectorAll('.help-icon');
+        helpIcons.forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // 先移除所有其他激活的问号
+                helpIcons.forEach(otherIcon => {
+                    if (otherIcon !== icon) {
+                        otherIcon.classList.remove('active');
+                    }
+                });
+                
+                // 切换当前问号的激活状态
+                icon.classList.toggle('active');
+            });
+        });
+        
+        // 点击页面其他地方关闭所有提示
+        document.addEventListener('click', function() {
+            helpIcons.forEach(icon => {
+                icon.classList.remove('active');
+            });
+        });
+        
+        // 优化移动端滑块体验
+        const sliders = document.querySelectorAll('input[type="range"]');
+        sliders.forEach(slider => {
+            // 添加触摸结束事件，确保值更新
+            slider.addEventListener('touchend', function() {
+                const event = new Event('change');
+                slider.dispatchEvent(event);
+            });
+            
+            // 添加触摸移动事件，实时更新显示值
+            slider.addEventListener('touchmove', function() {
+                if (slider.id === 'input-length') {
+                    dom.inputLengthValue.textContent = slider.value;
+                } else if (slider.id === 'output-length') {
+                    dom.outputLengthValue.textContent = slider.value;
+                } else if (slider.id === 'batch-size') {
+                    dom.batchSizeValue.textContent = slider.value;
+                }
+            });
+        });
+        
+        // 检测是否为移动设备
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (isMobile) {
+            // 调整表单元素大小以适应移动设备
+            document.querySelectorAll('select, input[type="number"]').forEach(el => {
+                el.style.fontSize = '16px'; // 避免iOS缩放
+            });
+            
+            // 调整表格布局以适应小屏幕
+            const table = document.querySelector('.hardware-table');
+            if (table) {
+                table.classList.add('mobile-table');
+            }
+        }
     }
 
     // Initial calls

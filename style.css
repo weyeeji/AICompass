@@ -213,6 +213,14 @@ legend {
     opacity: 1;
 }
 
+/* 添加触摸设备支持 */
+@media (hover: none) {
+    .help-icon.active .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
 .slider-group {
     padding-bottom: 20px;
 }
@@ -243,18 +251,18 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background: var(--primary-color);
     border-radius: 50%;
     border: 2px solid white;
     box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    margin-top: -6px;
+    margin-top: -8px;
 }
 
 input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     background: var(--primary-color);
     border-radius: 50%;
     border: 2px solid white;
@@ -521,11 +529,13 @@ input[type="range"]::-moz-range-track {
         padding: 15px;
     }
     header h1 {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
     }
     .input-group {
         flex-direction: column;
         align-items: flex-start;
+        position: relative;
+        padding-right: 30px;
     }
     .input-group label {
         width: 100%;
@@ -533,14 +543,14 @@ input[type="range"]::-moz-range-track {
     }
     .input-group input, .input-group select {
         width: 100%;
+        box-sizing: border-box;
+        padding: 12px 10px;
+        font-size: 16px; /* 避免iOS缩放 */
     }
     .help-icon {
         position: absolute;
-        right: 10px;
-    }
-    .input-group label {
-        position: relative;
-        padding-right: 30px;
+        right: 0;
+        top: 0;
     }
     
     .header-content {
@@ -550,6 +560,107 @@ input[type="range"]::-moz-range-track {
     
     .header-text {
         text-align: center;
+    }
+    
+    /* 改进滑块在移动端的体验 */
+    input[type="range"] {
+        height: 10px;
+        margin: 10px 0;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+        width: 28px;
+        height: 28px;
+    }
+    
+    input[type="range"]::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .slider-group {
+        margin-bottom: 25px;
+    }
+    
+    /* 改进表格在移动端的显示 */
+    .hardware-table {
+        font-size: 0.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .hardware-table th, .hardware-table td {
+        padding: 8px 4px;
+    }
+    
+    /* 表格横向滚动提示 */
+    .hardware-table::before {
+        content: "← 左右滑动查看更多 →";
+        display: block;
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--light-gray-text);
+        margin-bottom: 5px;
+    }
+    
+    /* 改进多模态部分在移动端的显示 */
+    .modal-header {
+        padding: 12px 10px;
+    }
+    
+    .specific-choice {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .specific-choice select {
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    /* 改进按钮在移动端的显示 */
+    .action-btn {
+        padding: 12px 16px;
+        margin: 5px;
+    }
+    
+    /* 改进模拟输出区域在移动端的显示 */
+    #simulation-output {
+        font-size: 14px;
+    }
+}
+
+/* 添加更小屏幕的适配 */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.3rem;
+    }
+    
+    header h2 {
+        font-size: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    fieldset {
+        padding: 15px 10px;
+    }
+    
+    legend {
+        font-size: 0.9rem;
+    }
+    
+    .tooltip {
+        width: 180px;
+        left: auto;
+        right: 0;
+        transform: none;
     }
 }
 
@@ -586,4 +697,12 @@ input[type="range"]::-moz-range-track {
 
 #audio-modal-params.hidden {
     display: none;
+}
+
+/* 移动端表格样式优化 */
+.mobile-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
 }
