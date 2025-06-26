@@ -15,12 +15,12 @@
     "vendor": "NVIDIA",
     "model": "H100 PCIe",
     "vram": 80,
-    "perf_fp16": 798,
-    "perf_bf16": 798,
-    "perf_fp8": 1598,
-    "perf_int8": 1598,
-    "perf_int4": 3196,
-    "interconnect_bw": 400,
+    "perf_fp16": 756,
+    "perf_bf16": 756,
+    "perf_fp8": 1513,
+    "perf_int8": 1513,
+    "perf_int4": 3026,
+    "interconnect_bw": 600,
     "memory_bw": 2000
   },
   {
@@ -56,8 +56,8 @@
     "perf_fp8": 0,
     "perf_int8": 624,
     "perf_int4": 1248,
-    "interconnect_bw": 300,
-    "memory_bw": 1935
+    "interconnect_bw": 64,
+    "memory_bw": 2039
   },
   {
     "vendor": "NVIDIA",
@@ -68,7 +68,7 @@
     "perf_fp8": 0,
     "perf_int8": 624,
     "perf_int4": 1248,
-    "interconnect_bw": 300,
+    "interconnect_bw": 64,
     "memory_bw": 1555
   },
   {
@@ -89,7 +89,7 @@
     "vram": 48,
     "perf_fp16": 90.5,
     "perf_bf16": 90.5,
-    "perf_fp8": 0,
+    "perf_fp8": 181,
     "perf_int8": 181,
     "perf_int4": 362,
     "interconnect_bw": 100,
@@ -101,7 +101,7 @@
     "vram": 48,
     "perf_fp16": 91.1,
     "perf_bf16": 91.1,
-    "perf_fp8": 0,
+    "perf_fp8": 182.2,
     "perf_int8": 182.2,
     "perf_int4": 364.4,
     "interconnect_bw": 32,
@@ -113,10 +113,10 @@
     "vram": 24,
     "perf_fp16": 82.6,
     "perf_bf16": 82.6,
-    "perf_fp8": 0,
+    "perf_fp8": 165.2,
     "perf_int8": 165.2,
     "perf_int4": 330.4,
-    "interconnect_bw": 25,
+    "interconnect_bw": 32,
     "memory_bw": 1008
   },
   {
@@ -125,10 +125,10 @@
     "vram": 16,
     "perf_fp16": 48.7,
     "perf_bf16": 48.7,
-    "perf_fp8": 0,
+    "perf_fp8": 97.4,
     "perf_int8": 97.4,
     "perf_int4": 194.8,
-    "interconnect_bw": 25,
+    "interconnect_bw": 32,
     "memory_bw": 716.8
   },
   {
@@ -149,7 +149,7 @@
     "vram": 12,
     "perf_fp16": 40.1,
     "perf_bf16": 40.1,
-    "perf_fp8": 0,
+    "perf_fp8": 80.2,
     "perf_int8": 80.2,
     "perf_int4": 160.4,
     "interconnect_bw": 16,
@@ -161,7 +161,7 @@
     "vram": 12,
     "perf_fp16": 29.2,
     "perf_bf16": 29.2,
-    "perf_fp8": 0,
+    "perf_fp8": 58.4,
     "perf_int8": 58.4,
     "perf_int4": 116.8,
     "interconnect_bw": 16,
@@ -172,7 +172,7 @@
     "model": "RTX 3090",
     "vram": 24,
     "perf_fp16": 35.6,
-    "perf_bf16": 0,
+    "perf_bf16": 35.6,
     "perf_fp8": 0,
     "perf_int8": 71.2,
     "perf_int4": 142.4,
@@ -184,24 +184,12 @@
     "model": "RTX 3080",
     "vram": 10,
     "perf_fp16": 29.8,
-    "perf_bf16": 0,
+    "perf_bf16": 29.8,
     "perf_fp8": 0,
     "perf_int8": 59.6,
     "perf_int4": 119.2,
     "interconnect_bw": 16,
     "memory_bw": 760
-  },
-  {
-    "vendor": "NVIDIA",
-    "model": "B100",
-    "vram": 192,
-    "perf_fp16": 1979,
-    "perf_bf16": 1979,
-    "perf_fp8": 3958,
-    "perf_int8": 3958,
-    "perf_int4": 7916,
-    "interconnect_bw": 1800,
-    "memory_bw": 5120
   },
   {
     "vendor": "AMD",
@@ -212,7 +200,7 @@
     "perf_fp8": 2614,
     "perf_int8": 2614,
     "perf_int4": 5228,
-    "interconnect_bw": 896,
+    "interconnect_bw": 448,
     "memory_bw": 5200
   },
   {
@@ -224,7 +212,7 @@
     "perf_fp8": 0,
     "perf_int8": 766,
     "perf_int4": 1532,
-    "interconnect_bw": 800,
+    "interconnect_bw": 400,
     "memory_bw": 3200
   },
   {
@@ -248,7 +236,7 @@
     "perf_fp8": 0,
     "perf_int8": 122.6,
     "perf_int4": 245.2,
-    "interconnect_bw": 32,
+    "interconnect_bw": 16,
     "memory_bw": 960
   },
   {
@@ -266,14 +254,14 @@
   {
     "vendor": "Google",
     "model": "TPU v5p",
-    "vram": 95,
+    "vram": 16,
     "perf_fp16": 459,
     "perf_bf16": 459,
     "perf_fp8": 918,
     "perf_int8": 918,
     "perf_int4": 1836,
-    "interconnect_bw": 4800,
-    "memory_bw": 2500
+    "interconnect_bw": 600,
+    "memory_bw": 2760
   },
   {
     "vendor": "Google",
@@ -284,7 +272,7 @@
     "perf_fp8": 0,
     "perf_int8": 550,
     "perf_int4": 1100,
-    "interconnect_bw": 3200,
+    "interconnect_bw": 400,
     "memory_bw": 1200
   },
   {
@@ -296,7 +284,7 @@
     "perf_fp8": 0,
     "perf_int8": 838,
     "perf_int4": 0,
-    "interconnect_bw": 2400,
+    "interconnect_bw": 300,
     "memory_bw": 2450
   },
   {
@@ -304,34 +292,34 @@
     "model": "Gaudi 3",
     "vram": 128,
     "perf_fp16": 0,
-    "perf_bf16": 1000,
+    "perf_bf16": 1835,
     "perf_fp8": 2000,
     "perf_int8": 2000,
     "perf_int4": 4000,
-    "interconnect_bw": 3200,
+    "interconnect_bw": 600,
     "memory_bw": 3600
   },
   {
     "vendor": "Intel",
     "model": "Ponte Vecchio",
     "vram": 128,
-    "perf_fp16": 419,
-    "perf_bf16": 419,
+    "perf_fp16": 452,
+    "perf_bf16": 452,
     "perf_fp8": 0,
-    "perf_int8": 838,
-    "perf_int4": 1676,
-    "interconnect_bw": 64,
+    "perf_int8": 904,
+    "perf_int4": 1808,
+    "interconnect_bw": 100,
     "memory_bw": 3200
   },
   {
     "vendor": "Intel",
     "model": "Arc A770",
     "vram": 16,
-    "perf_fp16": 17.2,
-    "perf_bf16": 17.2,
+    "perf_fp16": 39.4,
+    "perf_bf16": 39.4,
     "perf_fp8": 0,
-    "perf_int8": 34.4,
-    "perf_int4": 68.8,
+    "perf_int8": 78.8,
+    "perf_int4": 157.6,
     "interconnect_bw": 16,
     "memory_bw": 560
   },
@@ -344,7 +332,7 @@
     "perf_fp8": 0,
     "perf_int8": 256,
     "perf_int4": 512,
-    "interconnect_bw": 300,
+    "interconnect_bw": 100,
     "memory_bw": 1536
   },
   {
@@ -356,7 +344,7 @@
     "perf_fp8": 0,
     "perf_int8": 128,
     "perf_int4": 256,
-    "interconnect_bw": 200,
+    "interconnect_bw": 64,
     "memory_bw": 768
   },
   {
@@ -368,8 +356,8 @@
     "perf_fp8": 0,
     "perf_int8": 64,
     "perf_int4": 128,
-    "interconnect_bw": 16,
-    "memory_bw": 448
+    "interconnect_bw": 32,
+    "memory_bw": 192
   },
   {
     "vendor": "天数智芯",
@@ -408,18 +396,6 @@
     "memory_bw": 1600
   },
   {
-    "vendor": "壁仞科技",
-    "model": "BIRUI 100",
-    "vram": 32,
-    "perf_fp16": 128,
-    "perf_bf16": 128,
-    "perf_fp8": 0,
-    "perf_int8": 256,
-    "perf_int4": 512,
-    "interconnect_bw": 64,
-    "memory_bw": 800
-  },
-  {
     "vendor": "海光",
     "model": "DCU",
     "vram": 32,
@@ -440,7 +416,7 @@
     "perf_fp8": 0,
     "perf_int8": 256,
     "perf_int4": 512,
-    "interconnect_bw": 200,
+    "interconnect_bw": 100,
     "memory_bw": 1024
   },
   {
@@ -452,7 +428,79 @@
     "perf_fp8": 0,
     "perf_int8": 512,
     "perf_int4": 1024,
-    "interconnect_bw": 400,
+    "interconnect_bw": 300,
     "memory_bw": 1800
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300T",
+    "vram": 16,
+    "perf_fp16": 280,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 560,
+    "perf_int4": null,
+    "interconnect_bw": 200,
+    "memory_bw": 204.8
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300T A2",
+    "vram": 32,
+    "perf_fp16": 280,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 560,
+    "perf_int4": null,
+    "interconnect_bw": 200,
+    "memory_bw": 1408
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300T Pro",
+    "vram": 16,
+    "perf_fp16": 280,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 560,
+    "perf_int4": null,
+    "interconnect_bw": 200,
+    "memory_bw": 204.8
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300I (Model 3010)",
+    "vram": 32,
+    "perf_fp16": 32,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 64,
+    "perf_int4": null,
+    "interconnect_bw": 15.75,
+    "memory_bw": 204.8
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300I Duo",
+    "vram": 48,
+    "perf_fp16": 140,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 280,
+    "perf_int4": null,
+    "interconnect_bw": 64,
+    "memory_bw": 408
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300I Pro",
+    "vram": 24,
+    "perf_fp16": 70,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 140,
+    "perf_int4": null,
+    "interconnect_bw": 64,
+    "memory_bw": 204.8
   }
 ]
