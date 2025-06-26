@@ -10,7 +10,7 @@ AICompass是一个用于大语言模型(LLM)算力和显存需求评估的工具
 
 #### 稠密模型(Dense)显存计算
 
-稠密模型的显存占用主要包括模型权重、KV缓存和激活值三部分：
+稠密模型的显存占用主要包括模型权重、KV缓存、激活值和额外开销四部分：
 
 **模型权重显存**：
 - 中文：模型权重显存 = 模型总参数量 × 权重量化精度
@@ -27,9 +27,19 @@ AICompass是一个用于大语言模型(LLM)算力和显存需求评估的工具
 - 英文：Activations Memory = Batch Size × Sequence Length × Hidden Size × Activation Factor × Activations Quantization Precision
 - 公式：$M_{act} = B \times S \times H \times F_{act} \times Q_{act}$
 
+**额外开销显存**：
+- 中文：额外开销显存 = (模型权重显存 + KV缓存显存 + 激活值显存) × 额外开销比例
+- 英文：Overhead Memory = (Model Weights Memory + KV Cache Memory + Activations Memory) × Overhead Ratio
+- 公式：$M_{overhead} = (M_{weights} + M_{kv} + M_{act}) \times R_{overhead}$
+
+**总显存**：
+- 中文：总显存 = 模型权重显存 + KV缓存显存 + 激活值显存 + 额外开销显存
+- 英文：Total Memory = Model Weights Memory + KV Cache Memory + Activations Memory + Overhead Memory
+- 公式：$M_{total} = M_{weights} + M_{kv} + M_{act} + M_{overhead}$
+
 #### 混合专家模型(MoE)显存计算
 
-MoE模型的显存占用包括共享权重、专家权重、KV缓存和激活值：
+MoE模型的显存占用包括共享权重、专家权重、KV缓存、激活值和额外开销：
 
 **共享权重显存**：
 - 中文：共享权重显存 = 共享参数量 × 权重量化精度
@@ -55,9 +65,19 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存和激活值
   - $M_{act\_expert} = B \times S \times E_{active} \times I \times F_{expert} \times Q_{act}$
   - $M_{act} = M_{act\_shared} + M_{act\_expert}$
 
+**额外开销显存**：
+- 中文：额外开销显存 = (共享权重显存 + 专家权重显存 + KV缓存显存 + 激活值显存) × 额外开销比例
+- 英文：Overhead Memory = (Shared Weights Memory + Expert Weights Memory + KV Cache Memory + Activations Memory) × Overhead Ratio
+- 公式：$M_{overhead} = (M_{shared} + M_{expert} + M_{kv} + M_{act}) \times R_{overhead}$
+
+**总显存**：
+- 中文：总显存 = 共享权重显存 + 专家权重显存 + KV缓存显存 + 激活值显存 + 额外开销显存
+- 英文：Total Memory = Shared Weights Memory + Expert Weights Memory + KV Cache Memory + Activations Memory + Overhead Memory
+- 公式：$M_{total} = M_{shared} + M_{expert} + M_{kv} + M_{act} + M_{overhead}$
+
 #### 多模态模型(Multimodal)显存计算
 
-多模态模型的显存占用包括基础LLM权重、视觉模态权重、音频模态权重、KV缓存和激活值：
+多模态模型的显存占用包括基础LLM权重、视觉模态权重、音频模态权重、KV缓存、激活值和额外开销：
 
 **基础LLM权重显存**：
 - 中文：基础LLM权重显存 = LLM基础参数量 × 权重量化精度
@@ -94,9 +114,19 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存和激活值
   - Audio Activations = Batch Size × Audio Sequence Length × Hidden Size × Audio Activation Factor × Activations Quantization Precision
 - 公式：
   - $M_{act\_llm} = B \times S_{text} \times H \times F_{llm} \times Q_{act}$
-  - $M_{act\_vision} = B \times S_{image} \times H \times F_{vision} \times Q_{act}$
-  - $M_{act\_audio} = B \times S_{audio} \times H \times F_{audio} \times Q_{act}$
+  - $M_{act\_vision} = B \times S_{image} \times H \times F_{vision\_act} \times Q_{act}$
+  - $M_{act\_audio} = B \times S_{audio} \times H \times F_{audio\_act} \times Q_{act}$
   - $M_{act} = M_{act\_llm} + M_{act\_vision} + M_{act\_audio}$
+
+**额外开销显存**：
+- 中文：额外开销显存 = (基础LLM权重显存 + 视觉模态权重显存 + 音频模态权重显存 + KV缓存显存 + 激活值显存) × 额外开销比例
+- 英文：Overhead Memory = (Base LLM Weights Memory + Vision Modal Weights Memory + Audio Modal Weights Memory + KV Cache Memory + Activations Memory) × Overhead Ratio
+- 公式：$M_{overhead} = (M_{base} + M_{vision} + M_{audio} + M_{kv} + M_{act}) \times R_{overhead}$
+
+**总显存**：
+- 中文：总显存 = 基础LLM权重显存 + 视觉模态权重显存 + 音频模态权重显存 + KV缓存显存 + 激活值显存 + 额外开销显存
+- 英文：Total Memory = Base LLM Weights Memory + Vision Modal Weights Memory + Audio Modal Weights Memory + KV Cache Memory + Activations Memory + Overhead Memory
+- 公式：$M_{total} = M_{base} + M_{vision} + M_{audio} + M_{kv} + M_{act} + M_{overhead}$
 
 ### 计算能力需求评估
 
@@ -164,6 +194,7 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存和激活值
 | 注意力头数 | Number of Attention Heads | H_attn | 多头注意力机制中的头的数量 |
 | KV头数 | Number of Key-Value Heads | H_kv | 用于GQA/MQA的Key/Value头的数量 |
 | 词汇表大小 | Vocabulary Size | V | 模型词汇表的大小 |
+| 头维度 | Head Dimension | D_h | 每个注意力头的维度，等于隐藏层维度/注意力头数 |
 | 总参数量 | Total Parameters | P_total | 模型的总参数量(十亿) |
 | 共享参数量 | Shared Parameters | P_shared | MoE模型中的共享参数量 |
 | 单个专家参数量 | Parameters Per Expert | P_expert | 每个专家的参数量(十亿) |
@@ -237,7 +268,7 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存和激活值
 
 ## 使用方法
 
-1. 打开 `web/index.html` 文件
+1. 打开 `index.html` 文件
 2. 选择预设模型或自定义模型参数
 3. 调整推理配置和服务指标
 4. 查看显存占用分析和推荐硬件
@@ -248,12 +279,11 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存和激活值
 
 ```
 AICompass/
-  - README.md        # 项目说明文档
-  - web/
-    - data/
-      - gpu.json     # GPU硬件数据
-      - logo.png     # 项目Logo
-      - model.json   # 预设模型数据
-    - index.html     # 主页面
-    - script.js      # 主要计算逻辑
-    - style.css      # 样式表
+  - data/                # 数据文件目录
+    - gpu.json           # GPU硬件参数数据
+    - logo.png           # 项目logo
+    - model.json         # 预设模型参数数据
+  - index.html           # 主页面HTML
+  - script.js            # 主要JavaScript逻辑
+  - style.css            # 样式表
+  - README.md            # 项目说明文档
