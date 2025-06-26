@@ -280,14 +280,47 @@ input[type="range"]::-moz-range-track {
     position: relative;
     width: 100%;
     margin-top: 8px;
-    height: 15px;
+    height: 20px;
+    overflow: visible;
+    margin-bottom: 10px;
 }
 
 .slider-labels span {
     position: absolute;
     transform: translateX(-50%);
     color: var(--light-gray-text);
-    font-size: 12px;
+    font-size: 11px;
+    white-space: nowrap;
+    text-align: center;
+    min-width: 24px;
+    background-color: rgba(255, 255, 255, 0.7); /* 半透明背景，提高可读性 */
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* 确保标签不会超出容器 */
+.slider-labels span:first-child {
+    transform: translateX(0);
+    text-align: left;
+    padding-left: 0;
+}
+
+.slider-labels span:last-child {
+    transform: translateX(-100%);
+    text-align: right;
+    padding-right: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .slider-labels {
+        height: 24px;
+        margin-bottom: 15px;
+    }
+    
+    .slider-labels span {
+        font-size: 10px;
+    }
 }
 
 .chart-container {

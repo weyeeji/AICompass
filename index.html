@@ -70,6 +70,11 @@
                                 <input type="number" id="vocab-size" placeholder="例如：32000">
                                 <span class="help-icon">? <span class="tooltip">模型词汇表的大小 (vocab_size)。</span></span>
                             </div>
+                             <div class="input-group">
+                                <label for="max-position-embeddings">最大上下文长度</label>
+                                <input type="number" id="max-position-embeddings" placeholder="例如：4096">
+                                <span class="help-icon">? <span class="tooltip">模型支持的最大序列长度 (max_position_embeddings)。</span></span>
+                            </div>
                              <div id="dense-params" class="input-group">
                                 <label for="model-total-params">总/基础参数(B)</label>
                                 <input type="number" id="model-total-params" placeholder="例如：8 (十亿)">
@@ -171,7 +176,19 @@
                                 <label for="input-length">输入长度: <span id="input-length-value">512</span></label>
                                 <input type="range" id="input-length" min="1" max="16384" step="1" value="512" list="input-length-ticks">
                                 <datalist id="input-length-ticks">
-                                    <option value="1"></option><option value="128"></option><option value="512"></option><option value="1024"></option><option value="2048"></option><option value="4096"></option><option value="8192"></option><option value="16384"></option>
+                                    <option value="1"></option>
+                                    <option value="128"></option>
+                                    <option value="256"></option>
+                                    <option value="512"></option>
+                                    <option value="1024"></option>
+                                    <option value="2048"></option>
+                                    <option value="4096"></option>
+                                    <option value="8192"></option>
+                                    <option value="16384"></option>
+                                    <option value="32768"></option>
+                                    <option value="65536"></option>
+                                    <option value="131072"></option>
+                                    <option value="200000"></option>
                                 </datalist>
                                 <div class="slider-labels" id="input-length-labels"></div>
                             </div>
@@ -179,15 +196,36 @@
                                 <label for="output-length">输出长度: <span id="output-length-value">512</span></label>
                                 <input type="range" id="output-length" min="1" max="16384" step="1" value="512" list="output-length-ticks">
                                 <datalist id="output-length-ticks">
-                                    <option value="1"></option><option value="128"></option><option value="512"></option><option value="1024"></option><option value="2048"></option><option value="4096"></option><option value="8192"></option><option value="16384"></option>
+                                    <option value="1"></option>
+                                    <option value="128"></option>
+                                    <option value="256"></option>
+                                    <option value="512"></option>
+                                    <option value="1024"></option>
+                                    <option value="2048"></option>
+                                    <option value="4096"></option>
+                                    <option value="8192"></option>
+                                    <option value="16384"></option>
+                                    <option value="32768"></option>
+                                    <option value="65536"></option>
+                                    <option value="131072"></option>
+                                    <option value="200000"></option>
                                 </datalist>
                                 <div class="slider-labels" id="output-length-labels"></div>
                             </div>
                             <div class="slider-group">
                                 <label for="batch-size">并发量(Batch Size): <span id="batch-size-value">4</span></label>
-                                <input type="range" id="batch-size" min="1" max="128" step="1" value="4" list="concurrency-ticks">
+                                <input type="range" id="batch-size" min="1" max="512" step="1" value="4" list="concurrency-ticks">
                                 <datalist id="concurrency-ticks">
-                                    <option value="1"></option><option value="4"></option><option value="8"></option><option value="16"></option><option value="32"></option><option value="64"></option><option value="128"></option>
+                                    <option value="1"></option>
+                                    <option value="2"></option>
+                                    <option value="4"></option>
+                                    <option value="8"></option>
+                                    <option value="16"></option>
+                                    <option value="32"></option>
+                                    <option value="64"></option>
+                                    <option value="128"></option>
+                                    <option value="256"></option>
+                                    <option value="512"></option>
                                 </datalist>
                                 <div class="slider-labels" id="batch-size-labels"></div>
                             </div>

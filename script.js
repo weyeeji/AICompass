@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             num_attention_heads: document.getElementById('num-attention-heads'),
             num_key_value_heads: document.getElementById('num-key-value-heads'),
             vocab_size: document.getElementById('vocab-size'),
+            max_position_embeddings: document.getElementById('max-position-embeddings'),
             model_total_params: document.getElementById('model-total-params'),
             moe_total_params: document.getElementById('moe-total-params'),
             expert_params_per_expert: document.getElementById('expert-params-per-expert'),
@@ -91,10 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
         initMemoryChart();
         switchModelMode('preset');
         updateConditionalFields();
+        
+        // 确保在初始化时渲染所有滑块标签
         renderSliderLabels(dom.deployment.input_length, document.getElementById('input-length-ticks'), document.getElementById('input-length-labels'));
         renderSliderLabels(dom.deployment.output_length, document.getElementById('output-length-ticks'), document.getElementById('output-length-labels'));
         renderSliderLabels(dom.deployment.batch_size, document.getElementById('concurrency-ticks'), document.getElementById('batch-size-labels'));
-        updateInputOutputSliderLimits();
+        
+        // 在初始化时填充预设模型数据
+        if (dom.presetSelect.options.length > 0) {
+            populatePresetData();
+        } else {
+            updateInputOutputSliderLimits();
+        }
         updateSpeedDisplay();
     }
 
@@ -143,6 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         dom.presetSelect.addEventListener('change', populatePresetData);
         
+        // 添加对max_position_embeddings的监听
+        dom.model.max_position_embeddings.addEventListener('change', () => {
+            updateInputOutputSliderLimits();
+            updateAllCalculations();
+        });
+        
         dom.deployment.input_length.addEventListener('input', () => {
             updateInputOutputSliderLimits();
             updateAllCalculations();
@@ -153,6 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         dom.deployment.batch_size.addEventListener('input', () => {
             dom.batchSizeValue.textContent = dom.deployment.batch_size.value;
+            updateAllCalculations();
         });
 
         // 多模态复选框事件监听
@@ -196,6 +212,13 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.specificGpuSelect.addEventListener('change', updateAllCalculations);
         dom.startSimBtn.addEventListener('click', startSimulation);
         dom.resetSimBtn.addEventListener('click', resetSimulation);
+        
+        // 添加窗口大小变化事件监听，重新渲染滑块标签
+        window.addEventListener('resize', debounce(() => {
+            renderSliderLabels(dom.deployment.input_length, document.getElementById('input-length-ticks'), document.getElementById('input-length-labels'));
+            renderSliderLabels(dom.deployment.output_length, document.getElementById('output-length-ticks'), document.getElementById('output-length-labels'));
+            renderSliderLabels(dom.deployment.batch_size, document.getElementById('concurrency-ticks'), document.getElementById('batch-size-labels'));
+        }, 250));
     }
     
     function switchModelMode(mode) {
@@ -204,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.customModeBtn.classList.toggle('active', !isPreset);
         dom.presetSelectGroup.style.display = isPreset ? 'flex' : 'none';
         
+        // 设置输入框的禁用状态
         Object.values(dom.model).forEach(input => {
             if (input && (input.tagName === 'SELECT' || input.tagName === 'INPUT')) {
                 input.disabled = isPreset;
@@ -213,11 +237,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isPreset) {
             populatePresetData();
         } else {
-            dom.deployment.input_length.max = DEFAULT_MAX_SEQLEN;
-            dom.deployment.output_length.max = DEFAULT_MAX_SEQLEN;
-            renderSliderLabels(dom.deployment.input_length, document.getElementById('input-length-ticks'), document.getElementById('input-length-labels'));
-            renderSliderLabels(dom.deployment.output_length, document.getElementById('output-length-ticks'), document.getElementById('output-length-labels'));
-            renderSliderLabels(dom.deployment.batch_size, document.getElementById('concurrency-ticks'), document.getElementById('batch-size-labels'));
+            // 清空所有输入框
+            Object.keys(dom.model).forEach(key => {
+                if (key === 'has_vision_modal' || key === 'has_audio_modal') {
+                    dom.model[key].checked = key === 'has_vision_modal';
+                } else if (dom.model[key] && dom.model[key].value !== undefined) {
+                    dom.model[key].value = '';
+                }
+            });
+            
+            // 设置默认值
+            dom.model.type.value = 'Dense';
+            dom.model.max_position_embeddings.value = DEFAULT_MAX_SEQLEN;
+            
+            updateConditionalFields();
             updateInputOutputSliderLimits();
             updateAllCalculations();
         }
@@ -268,6 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.model.num_attention_heads.value = params.num_attention_heads || '';
         dom.model.num_key_value_heads.value = params.num_key_value_heads || '';
         dom.model.vocab_size.value = params.vocab_size || '';
+        dom.model.max_position_embeddings.value = params.max_position_embeddings || '';
         
         if (data.model_type === 'Dense') {
             dom.model.model_total_params.value = params.model_total_params / 1e9 || '';
@@ -312,13 +346,11 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.model.model_total_params.value = '';
         }
         
-        const max_len = params.max_position_embeddings || DEFAULT_MAX_SEQLEN;
-        dom.deployment.input_length.max = max_len;
-        dom.deployment.output_length.max = max_len;
+        // 设置输入输出长度的初始值
         dom.deployment.input_length.value = params.input_length || 512;
         dom.deployment.output_length.value = params.output_length || 512;
-        renderSliderLabels(dom.deployment.input_length, document.getElementById('input-length-ticks'), document.getElementById('input-length-labels'));
-        renderSliderLabels(dom.deployment.output_length, document.getElementById('output-length-ticks'), document.getElementById('output-length-labels'));
+        
+        // 更新界面
         updateInputOutputSliderLimits();
         updateConditionalFields();
         updateAllCalculations();
@@ -327,21 +359,104 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSliderLabels(slider, datalist, labelContainer) {
         const sliderMin = parseFloat(slider.min);
         const sliderMax = parseFloat(slider.max);
-        const range = sliderMax - sliderMin;
         
+        // 清除现有标签
         labelContainer.innerHTML = '';
-        if (range <= 0) return;
-
-        const options = datalist.getElementsByTagName('option');
-        for (let i = 0; i < options.length; i++) {
-            const value = parseFloat(options[i].value);
-            if (value >= sliderMin && value <= sliderMax) {
-                const percent = ((value - sliderMin) / range) * 100;
-                const label = document.createElement('span');
-                label.textContent = value >= 1024 ? `${value / 1024}k` : value;
-                label.style.left = `${percent}%`;
-                labelContainer.appendChild(label);
+        
+        // 如果范围无效，直接返回
+        if (sliderMax <= sliderMin) return;
+        
+        // 获取datalist中的所有选项值
+        const allOptions = Array.from(datalist.getElementsByTagName('option'))
+            .map(option => parseFloat(option.value))
+            .filter(value => !isNaN(value) && value >= sliderMin && value <= sliderMax)
+            .sort((a, b) => a - b);
+        
+        // 如果没有选项，则使用最小值和最大值
+        if (allOptions.length === 0) {
+            addLabel(sliderMin, 0);
+            addLabel(sliderMax, 100);
+            return;
+        }
+        
+        // 始终显示最小值
+        addLabel(sliderMin, 0);
+        
+        // 选择中间的4个标签值
+        // 优先选择2的幂次值，并且是常用值
+        const commonValues = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072];
+        
+        // 过滤出范围内的常用值
+        const validCommonValues = commonValues.filter(val => 
+            val > sliderMin && val < sliderMax && allOptions.includes(val)
+        );
+        
+        // 如果常用值不够4个，则使用所有可用的常用值
+        let selectedValues = [];
+        
+        if (validCommonValues.length <= 4) {
+            selectedValues = validCommonValues;
+        } else {
+            // 从最大值往左选择4个值
+            // 首先找到小于最大值的最大常用值的索引
+            const maxValidValueIndex = validCommonValues.findIndex(val => val >= sliderMax) - 1;
+            const startIndex = maxValidValueIndex >= 0 ? maxValidValueIndex : validCommonValues.length - 1;
+            
+            // 从这个索引开始，选择4个或更少的值
+            const count = Math.min(4, validCommonValues.length);
+            const endIndex = Math.max(0, startIndex - count + 1);
+            
+            for (let i = startIndex; i >= endIndex; i--) {
+                selectedValues.unshift(validCommonValues[i]);
             }
+            
+            // 如果选择的值少于4个，尝试从更小的值中选择
+            if (selectedValues.length < count && endIndex > 0) {
+                const remainingCount = count - selectedValues.length;
+                for (let i = endIndex - 1; i >= 0 && selectedValues.length < count; i--) {
+                    selectedValues.unshift(validCommonValues[i]);
+                }
+            }
+        }
+        
+        // 添加选中的中间值
+        selectedValues.forEach(value => {
+            const percent = ((value - sliderMin) / (sliderMax - sliderMin)) * 100;
+            addLabel(value, percent);
+        });
+        
+        // 始终显示最大值
+        addLabel(sliderMax, 100);
+        
+        // 辅助函数：添加标签
+        function addLabel(value, percent) {
+            const label = document.createElement('span');
+            
+            // 格式化显示值
+            let formattedValue;
+            if (value >= 1000000) {
+                formattedValue = `${Math.round(value / 1000000)}M`;
+            } else if (value >= 1000) {
+                formattedValue = `${Math.round(value / 1000)}K`;
+            } else {
+                formattedValue = Math.round(value);
+            }
+            
+            label.textContent = formattedValue;
+            label.style.left = `${percent}%`;
+            
+            // 特殊处理第一个和最后一个标签的位置
+            if (percent === 0) {
+                label.style.left = '0%';
+                label.style.transform = 'none';
+                label.style.textAlign = 'left';
+            } else if (percent === 100) {
+                label.style.left = '100%';
+                label.style.transform = 'translateX(-100%)';
+                label.style.textAlign = 'right';
+            }
+            
+            labelContainer.appendChild(label);
         }
     }
     
@@ -1197,34 +1312,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 工具函数：更新输入/输出长度滑块的label，并保证两者之和不超过最大序列长度
     function updateInputOutputSliderLimits() {
-        // 获取最大序列长度
-        const maxSeqLen = parseInt(dom.deployment.input_length.max) || 32768;
+        // 获取最大序列长度，优先使用模型的max_position_embeddings
+        const maxPositionEmbeddings = parseInt(dom.model.max_position_embeddings.value) || DEFAULT_MAX_SEQLEN;
+        
+        // 更新滑块的最大值
+        dom.deployment.input_length.max = maxPositionEmbeddings;
+        dom.deployment.output_length.max = maxPositionEmbeddings;
+        
         // 当前输入/输出长度
         let inputVal = parseInt(dom.deployment.input_length.value) || 0;
         let outputVal = parseInt(dom.deployment.output_length.value) || 0;
+        
+        // 如果当前值超过新的最大值，则调整
+        if (inputVal > maxPositionEmbeddings) {
+            inputVal = maxPositionEmbeddings;
+            dom.deployment.input_length.value = inputVal;
+        }
+        
+        if (outputVal > maxPositionEmbeddings) {
+            outputVal = maxPositionEmbeddings;
+            dom.deployment.output_length.value = outputVal;
+        }
+        
         // 如果两者之和超过最大序列长度，则当前操作的滑块自动回调
         // 判断事件来源
         const activeElement = document.activeElement;
         if (activeElement === dom.deployment.input_length) {
-            if (inputVal + outputVal > maxSeqLen) {
-                inputVal = maxSeqLen - outputVal;
+            if (inputVal + outputVal > maxPositionEmbeddings) {
+                inputVal = maxPositionEmbeddings - outputVal;
                 dom.deployment.input_length.value = inputVal;
             }
         } else if (activeElement === dom.deployment.output_length) {
-            if (inputVal + outputVal > maxSeqLen) {
-                outputVal = maxSeqLen - inputVal;
+            if (inputVal + outputVal > maxPositionEmbeddings) {
+                outputVal = maxPositionEmbeddings - inputVal;
                 dom.deployment.output_length.value = outputVal;
             }
         } else {
             // 初始化或其他情况也做一次兜底
-            if (inputVal + outputVal > maxSeqLen) {
-                outputVal = maxSeqLen - inputVal;
+            if (inputVal + outputVal > maxPositionEmbeddings) {
+                outputVal = maxPositionEmbeddings - inputVal;
                 dom.deployment.output_length.value = outputVal;
             }
         }
+        
+        // 立即更新滑块标签显示
+        renderSliderLabels(dom.deployment.input_length, document.getElementById('input-length-ticks'), document.getElementById('input-length-labels'));
+        renderSliderLabels(dom.deployment.output_length, document.getElementById('output-length-ticks'), document.getElementById('output-length-labels'));
+        
         // label动态显示"当前值/最大值"
-        dom.inputLengthValue.textContent = `${dom.deployment.input_length.value} / ${dom.deployment.input_length.max}`;
-        dom.outputLengthValue.textContent = `${dom.deployment.output_length.value} / ${dom.deployment.output_length.max}`;
+        dom.inputLengthValue.textContent = `${dom.deployment.input_length.value} / ${maxPositionEmbeddings}`;
+        dom.outputLengthValue.textContent = `${dom.deployment.output_length.value} / ${maxPositionEmbeddings}`;
     }
 
     // 设置输入验证
@@ -1404,6 +1541,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 table.classList.add('mobile-table');
             }
         }
+    }
+
+    // 防抖函数，避免频繁触发事件
+    function debounce(func, wait) {
+        let timeout;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(context, args);
+            }, wait);
+        };
     }
 
     // Initial calls
