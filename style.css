@@ -546,6 +546,12 @@ input[type="range"]::-moz-range-track {
     background-color: #0056b3;
 }
 
+.action-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
 .action-btn.refresh {
     background-color: var(--light-gray-text);
 }
@@ -684,8 +690,51 @@ input[type="range"]::-moz-range-track {
     }
     
     /* 改进模拟输出区域在移动端的显示 */
+    .simulation-container {
+        margin-bottom: 20px;
+    }
+    
+    .simulation-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .simulation-controls {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .simulation-controls .action-btn {
+        flex: 1;
+        margin: 0 5px;
+        padding: 12px 5px;
+        font-size: 14px;
+    }
+    
     #simulation-output {
         font-size: 14px;
+        min-height: 150px;
+        padding: 10px;
+    }
+    
+    /* 禁用按钮的样式 */
+    .action-btn:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    
+    /* 改进多模态配置部分在移动端的显示 */
+    #multimodal-inference-config h4 {
+        font-size: 14px;
+        margin: 10px 0;
+    }
+    
+    #vision-inference-config .input-group,
+    #audio-inference-config .input-group {
+        margin-bottom: 12px;
     }
 }
 
@@ -721,6 +770,17 @@ input[type="range"]::-moz-range-track {
         left: auto;
         right: 0;
         transform: none;
+    }
+    
+    /* 改进模拟区域在更小屏幕上的显示 */
+    #simulation-output {
+        font-size: 13px;
+        min-height: 120px;
+    }
+    
+    .simulation-controls .action-btn {
+        padding: 10px 5px;
+        font-size: 13px;
     }
 }
 

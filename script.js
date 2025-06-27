@@ -211,7 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         dom.throughput.addEventListener('input', updateSpeedDisplay);
         dom.specificGpuSelect.addEventListener('change', updateAllCalculations);
-        dom.startSimBtn.addEventListener('click', startSimulation);
+        dom.startSimBtn.addEventListener('click', () => {
+            // 防止连续快速点击
+            if (!simulationInProgress) {
+                startSimulation();
+            }
+        });
         dom.resetSimBtn.addEventListener('click', resetSimulation);
         
         // 添加窗口大小变化事件监听，重新渲染滑块标签
@@ -1339,11 +1344,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     let simulationInterval = null;
+    let simulationInProgress = false; // 添加标志变量，跟踪模拟是否正在进行
     const sampleText = "AICompass 是一个强大的模型算力评估工具。它通过对模型结构、部署配置和服务指标的综合分析，精确计算出所需的显存资源，并推荐合适的硬件配置...";
     
     function startSimulation() {
-        if (simulationInterval) clearInterval(simulationInterval);
-        resetSimulation();
+        // 如果模拟正在进行中，先停止它
+        if (simulationInProgress) {
+            resetSimulation();
+        }
+        
+        simulationInProgress = true; // 设置模拟进行中标志
         
         // 使用TTFT和TPOT进行模拟
         let ttft = parseInt(dom.ttft.value);
@@ -1363,28 +1373,58 @@ document.addEventListener('DOMContentLoaded', () => {
         // 更新速度显示
         updateSpeedDisplay();
         
+        // 禁用开始按钮，防止重复点击
+        dom.startSimBtn.disabled = true;
+        
         // 首先模拟TTFT的等待时间
         dom.simulationOutput.value = "正在思考...";
         
-        setTimeout(() => {
+        let ttftTimeout = setTimeout(() => {
             dom.simulationOutput.value = "";
             let currentIndex = 0;
             
             // 然后按照TPOT的速率输出文本
-            simulationInterval = setInterval(() => {
+            let tokenInterval = setInterval(() => {
                 if (currentIndex < sampleText.length) {
                     dom.simulationOutput.value += sampleText[currentIndex++];
                     dom.simulationOutput.scrollTop = dom.simulationOutput.scrollHeight;
                 } else {
-                    clearInterval(simulationInterval);
+                    clearInterval(tokenInterval);
+                    simulationInterval = null;
+                    simulationInProgress = false; // 模拟完成
+                    dom.startSimBtn.disabled = false; // 重新启用开始按钮
                 }
             }, tpot);
+            
+            // 更新simulationInterval引用
+            simulationInterval = {
+                ttftTimeout: null, // 已经执行完毕
+                interval: tokenInterval
+            };
         }, ttft);
+        
+        // 保存timeout引用，以便在需要时清除
+        simulationInterval = {
+            ttftTimeout: ttftTimeout,
+            interval: null
+        };
     }
     
     function resetSimulation() {
-        if (simulationInterval) clearInterval(simulationInterval);
+        // 清除所有定时器
+        if (simulationInterval) {
+            if (simulationInterval.ttftTimeout) {
+                clearTimeout(simulationInterval.ttftTimeout);
+            }
+            if (simulationInterval.interval) {
+                clearInterval(simulationInterval.interval);
+            }
+            simulationInterval = null;
+        }
+        
         dom.simulationOutput.value = '';
+        simulationInProgress = false; // 重置模拟状态
+        dom.startSimBtn.disabled = false; // 确保开始按钮可用
     }
 
     function updateSpeedDisplay() {
