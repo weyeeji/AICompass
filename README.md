@@ -132,40 +132,69 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存、激活值
 
 #### 稠密模型(Dense)算力计算
 
-- 中文：所需算力 = 吞吐量 × 参数因子 × 注意力因子 × 复杂度因子 × 序列长度因子 × 批处理效率因子 × 模型参数量 × 吞吐量因子
-- 英文：Required Computing Power = Throughput × Parameter Factor × Attention Factor × Complexity Factor × Sequence Length Factor × Batch Efficiency Factor × Model Parameters × Throughput Factor
-- 公式：$C = T \times F_{params} \times F_{attn} \times F_{complex} \times F_{seq} \times F_{batch} \times P_{total} \times F_{throughput}$
+- 中文：所需算力 = max(Prefill阶段计算速率, Decode阶段计算速率) × 量化精度系数 × 批处理效率 × 全局校准因子
+  - Prefill阶段计算速率 = Prefill阶段计算量 / TTFT
+    - Prefill阶段计算量 = 基础FLOPs系数 × 模型规模系数 × 输入长度 × 模型参数量 × 注意力效率系数 × 批处理大小
+  - Decode阶段计算速率 = 单Token计算量 × 吞吐量
+    - 单Token计算量 = 基础FLOPs系数 × 模型规模系数 × 序列长度对数影响 × 模型参数量 × 注意力效率系数 × KV缓存优化系数 × 批处理大小
+- 英文：Required Computing Power = max(Prefill Computing Rate, Decode Computing Rate) × Quantization Factor × Batch Efficiency × Global Calibration
+  - Prefill Computing Rate = Prefill Computing / TTFT
+    - Prefill Computing = Base FLOPs × Model Scale × Input Length × Parameters × Attention Efficiency × Batch Size
+  - Decode Computing Rate = Per-Token Computing × Throughput
+    - Per-Token Computing = Base FLOPs × Model Scale × Sequence Length Log Effect × Parameters × Attention Efficiency × KV Cache Factor × Batch Size
+- 公式：
+  - $C_{prefill} = \frac{F_{base} \times S_{model} \times L_{in} \times P_{total} \times (1/E_{attn}) \times B}{TTFT}$
+  - $C_{token} = F_{base} \times S_{model} \times (1 + 0.1\log_{10}(L_{seq})) \times P_{total} \times (1/E_{attn}) \times 0.5 \times B$
+  - $C_{decode} = C_{token} \times T$
+  - $C = \max(C_{prefill}, C_{decode}) \times F_{quant} \times E_{batch} \times G_{cal}$
 
 #### 混合专家模型(MoE)算力计算
 
-- 中文：所需算力 = 共享部分算力 + 专家部分算力
-  - 共享部分算力 = 吞吐量 × 共享参数量 × 共享复杂度因子 × 序列长度因子 × 批处理效率因子
-  - 专家部分算力 = 吞吐量 × 专家参数量 × 专家激活比例 × 专家复杂度因子 × 序列长度因子 × 批处理效率因子
-- 英文：
-  - Shared Computing = Throughput × Shared Parameters × Shared Complexity Factor × Sequence Length Factor × Batch Efficiency Factor
-  - Expert Computing = Throughput × Expert Parameters × Expert Activation Ratio × Expert Complexity Factor × Sequence Length Factor × Batch Efficiency Factor
+- 中文：所需算力 = max(Prefill阶段计算速率, Decode阶段计算速率) × 量化精度系数 × 批处理效率 × 全局校准因子
+  - 有效参数量 = 共享参数量 + 专家参数量 × 专家激活比例
+  - Prefill阶段计算速率 = Prefill阶段计算量 / TTFT
+    - Prefill阶段计算量 = 基础FLOPs系数 × 模型规模系数 × 输入长度 × 有效参数量 × 注意力效率系数 × 批处理大小 × MoE路由开销
+  - Decode阶段计算速率 = 单Token计算量 × 吞吐量
+    - 单Token计算量 = 基础FLOPs系数 × 模型规模系数 × 序列长度对数影响 × 有效参数量 × 注意力效率系数 × KV缓存优化系数 × 批处理大小 × MoE路由开销
+- 英文：Required Computing Power = max(Prefill Computing Rate, Decode Computing Rate) × Quantization Factor × Batch Efficiency × Global Calibration
+  - Effective Parameters = Shared Parameters + Expert Parameters × Expert Activation Ratio
+  - Prefill Computing Rate = Prefill Computing / TTFT
+    - Prefill Computing = Base FLOPs × Model Scale × Input Length × Effective Parameters × Attention Efficiency × Batch Size × MoE Routing Factor
+  - Decode Computing Rate = Per-Token Computing × Throughput
+    - Per-Token Computing = Base FLOPs × Model Scale × Sequence Length Log Effect × Effective Parameters × Attention Efficiency × KV Cache Factor × Batch Size × MoE Routing Factor
 - 公式：
-  - $C_{shared} = T \times P_{shared} \times F_{shared\_complex} \times F_{seq} \times F_{batch}$
-  - $C_{expert} = T \times P_{expert} \times R_{expert} \times F_{expert\_complex} \times F_{seq} \times F_{batch}$
-  - $C = (C_{shared} + C_{expert}) \times F_{throughput}$
+  - $P_{effective} = P_{shared} + P_{expert} \times R_{expert}$
+  - $C_{prefill} = \frac{F_{base} \times S_{model} \times L_{in} \times P_{effective} \times (1/E_{attn}) \times B \times F_{moe}}{TTFT}$
+  - $C_{token} = F_{base} \times S_{model} \times (1 + 0.1\log_{10}(L_{seq})) \times P_{effective} \times (1/E_{attn}) \times 0.5 \times B \times F_{moe}$
+  - $C_{decode} = C_{token} \times T$
+  - $C = \max(C_{prefill}, C_{decode}) \times F_{quant} \times E_{batch} \times G_{cal}$
 
 #### 多模态模型(Multimodal)算力计算
 
-- 中文：所需算力 = LLM算力 + 模态算力
-  - LLM算力 = 吞吐量 × LLM参数量 × 复杂度因子 × 序列长度因子 × 批处理效率因子
-  - 模态算力 = 视觉算力 + 音频算力
-    - 视觉算力 = 视觉参数量 × 视觉复杂度因子 × 批处理大小 × 批处理效率因子
-    - 音频算力 = 音频参数量 × 音频复杂度因子 × 批处理大小 × 批处理效率因子
-- 英文：
-  - LLM Computing = Throughput × LLM Parameters × Complexity Factor × Sequence Length Factor × Batch Efficiency Factor
+- 中文：所需算力 = (max(Prefill阶段计算速率, Decode阶段计算速率) + 模态处理算力) × 量化精度系数 × 批处理效率 × 全局校准因子
+  - Prefill阶段计算速率 = Prefill阶段计算量 / TTFT
+    - Prefill阶段计算量 = 基础FLOPs系数 × 模型规模系数 × 输入长度 × LLM参数量 × 注意力效率系数 × 批处理大小 × 多模态处理开销
+  - Decode阶段计算速率 = 单Token计算量 × 吞吐量
+    - 单Token计算量 = 基础FLOPs系数 × 模型规模系数 × 序列长度对数影响 × LLM参数量 × 注意力效率系数 × KV缓存优化系数 × 批处理大小
+  - 模态处理算力 = 视觉模态算力 + 音频模态算力
+    - 视觉模态算力 = 视觉参数量 × 视觉计算系数 × 批处理大小
+    - 音频模态算力 = 音频参数量 × 音频计算系数 × 批处理大小
+- 英文：Required Computing Power = (max(Prefill Computing Rate, Decode Computing Rate) + Modal Computing) × Quantization Factor × Batch Efficiency × Global Calibration
+  - Prefill Computing Rate = Prefill Computing / TTFT
+    - Prefill Computing = Base FLOPs × Model Scale × Input Length × LLM Parameters × Attention Efficiency × Batch Size × Multimodal Factor
+  - Decode Computing Rate = Per-Token Computing × Throughput
+    - Per-Token Computing = Base FLOPs × Model Scale × Sequence Length Log Effect × LLM Parameters × Attention Efficiency × KV Cache Factor × Batch Size
   - Modal Computing = Vision Computing + Audio Computing
-    - Vision Computing = Vision Parameters × Vision Complexity Factor × Batch Size × Batch Efficiency Factor
-    - Audio Computing = Audio Parameters × Audio Complexity Factor × Batch Size × Batch Efficiency Factor
+    - Vision Computing = Vision Parameters × Vision Computing Factor × Batch Size
+    - Audio Computing = Audio Parameters × Audio Computing Factor × Batch Size
 - 公式：
-  - $C_{llm} = T \times P_{base} \times F_{complex} \times F_{seq} \times F_{batch}$
-  - $C_{vision} = P_{vision} \times F_{vision\_complex} \times B \times F_{batch}$
-  - $C_{audio} = P_{audio} \times F_{audio\_complex} \times B \times F_{batch}$
-  - $C = (C_{llm} + C_{vision} + C_{audio}) \times F_{throughput}$
+  - $C_{prefill} = \frac{F_{base} \times S_{model} \times L_{in} \times P_{base} \times (1/E_{attn}) \times B \times F_{mm}}{TTFT}$
+  - $C_{token} = F_{base} \times S_{model} \times (1 + 0.1\log_{10}(L_{seq})) \times P_{base} \times (1/E_{attn}) \times 0.5 \times B$
+  - $C_{decode} = C_{token} \times T$
+  - $C_{vision} = P_{vision} \times F_{vision} \times B$
+  - $C_{audio} = P_{audio} \times F_{audio} \times B$
+  - $C_{modal} = C_{vision} + C_{audio}$
+  - $C = (\max(C_{prefill}, C_{decode}) + C_{modal}) \times F_{quant} \times E_{batch} \times G_{cal}$
 
 ### 硬件需求计算
 
@@ -226,9 +255,9 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存、激活值
 
 | 中文名称 | 英文名称 | 英文缩写 | 说明 |
 |---------|---------|---------|------|
-| 吞吐量 | Throughput | T | 系统每秒能够生成的Token总数 |
-| 首token时间 | Time To First Token | TTFT | 接收请求后，生成首个Token的时间(ms) |
-| 单token时间 | Time Per Output Token | TPOT | 生成后续每个Token的平均时间(ms) |
+| 首token时间 | Time To First Token | TTFT | 接收请求后，生成首个Token的时间(ms)，主要反映Prefill阶段性能 |
+| 单token时间 | Time Per Output Token | TPOT | 生成后续每个Token的平均时间(ms)，主要反映Decode阶段性能 |
+| 吞吐量 | Throughput | T | 系统每秒能够生成的Token总数，由TPOT计算得到(1/TPOT×1000) |
 
 ### 计算因子
 
@@ -242,15 +271,20 @@ MoE模型的显存占用包括共享权重、专家权重、KV缓存、激活值
 | 音频激活因子 | Audio Activation Factor | F_audio_act | 音频模态激活值因子(默认3.0) |
 | 视觉token因子 | Vision Token Factor | F_vision | 视觉token对KV Cache的影响因子(默认1.0) |
 | 音频token因子 | Audio Token Factor | F_audio | 音频token对KV Cache的影响因子(默认0.8) |
-| 稠密复杂度因子 | Dense Complexity Factor | F_complex | 模型架构复杂度因子(默认2.0) |
-| 共享复杂度因子 | MoE Shared Complexity Factor | F_shared_complex | MoE共享部分复杂度因子(默认1.2) |
-| 专家复杂度因子 | MoE Expert Complexity Factor | F_expert_complex | MoE专家部分复杂度因子(默认1.5) |
-| 视觉复杂度因子 | Vision Complexity Factor | F_vision_complex | 视觉模态复杂度因子(默认1.0) |
-| 音频复杂度因子 | Audio Complexity Factor | F_audio_complex | 音频模态复杂度因子(默认0.8) |
-| 注意力复杂度因子 | Attention Complexity Factor | F_attn | 注意力机制计算复杂度因子(默认1.0) |
-| 序列长度因子 | Sequence Length Factor | F_seq | 序列长度非线性增长因子 |
-| 批处理效率因子 | Batch Efficiency Factor | F_batch | 批处理效率因子 |
-| 吞吐量因子 | Throughput Factor | F_throughput | 吞吐量对算力需求的影响因子 |
+| 基础FLOPs系数 | Base FLOPs Coefficient | F_base | 每个token的基础计算量系数(默认12) |
+| 模型规模系数 | Model Scale Factor | S_model | 基于隐藏层大小和层数的模型规模系数 |
+| 注意力效率系数 | Attention Efficiency | E_attn | 注意力机制效率系数(KV头数/注意力头数) |
+| 视觉计算系数 | Vision Computing Factor | F_vision | 视觉模态计算系数(默认0.05) |
+| 音频计算系数 | Audio Computing Factor | F_audio | 音频模态计算系数(默认0.03) |
+| MoE路由开销 | MoE Routing Factor | F_moe | MoE模型路由开销系数(默认1.2) |
+| 多模态处理开销 | Multimodal Factor | F_mm | 多模态处理额外开销系数(默认1.3) |
+| 批处理效率 | Batch Efficiency | E_batch | 批处理大小对计算效率的影响 |
+| 量化精度系数 | Quantization Factor | F_quant | 量化精度对算力需求的影响系数 |
+| 全局校准因子 | Global Calibration | G_cal | 基于实际部署经验的全局校准因子(默认0.01) |
+| 批处理大小 | Batch Size | B | 并发处理的请求数量 |
+| 输入长度 | Input Length | L_in | 输入序列的长度(token数) |
+| 序列总长度 | Sequence Length | L_seq | 输入长度+输出长度 |
+| 吞吐量 | Throughput | T | 系统每秒能够生成的Token总数(tokens/s) |
 
 ### 硬件参数
 

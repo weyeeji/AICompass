@@ -269,11 +269,6 @@
                         <fieldset>
                             <legend>📈 服务指标</legend>
                             <div class="input-group">
-                                <label for="throughput">吞吐量(tok/s)</label>
-                                <input type="number" id="throughput" value="50" data-default="50">
-                                <span class="help-icon">? <span class="tooltip">系统每秒能够生成的Token总数</span></span>
-                            </div>
-                            <div class="input-group">
                                 <label for="ttft">TTFT(ms)</label>
                                 <input type="number" id="ttft" placeholder="Time To First Token" value="500" data-default="500">
                                 <span class="help-icon">? <span class="tooltip">Time To First Token: 接收请求后，生成首个Token的时间。</span></span>
@@ -282,6 +277,16 @@
                                 <label for="tpot">TPOT(ms)</label>
                                 <input type="number" id="tpot" placeholder="Time Per Output Token" value="50" data-default="50">
                                 <span class="help-icon">? <span class="tooltip">Time Per Output Token: 生成后续每个Token的平均时间。</span></span>
+                            </div>
+                            <div class="input-group">
+                                <label for="throughput-display">吞吐量</label>
+                                <div class="throughput-value-container">
+                                    <span>⚡</span>
+                                    <span id="throughput-value" style="color: #0066cc; font-weight: bold;">20</span>
+                                    <span style="margin-left: 4px;">Tokens/s</span>
+                                </div>
+                                <span class="help-icon">? <span class="tooltip">系统每秒能够生成的Token总数，由TPOT计算得到(1/TPOT×1000)</span></span>
+                                <input type="hidden" id="throughput" value="20" data-default="20">
                             </div>
                         </fieldset>
                     </div>
