@@ -352,9 +352,9 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.model.model_total_params.value = '';
         }
         
-        // 设置输入输出长度的初始值
-        dom.deployment.input_length.value = params.input_length || 512;
-        dom.deployment.output_length.value = params.output_length || 512;
+        // 设置输入输出长度的初始值，如果预设值过大则使用默认值1024
+        dom.deployment.input_length.value = (params.input_length && params.input_length <= 16384) ? params.input_length : 1024;
+        dom.deployment.output_length.value = (params.output_length && params.output_length <= 16384) ? params.output_length : 1024;
         
         // 更新界面
         updateInputOutputSliderLimits();
