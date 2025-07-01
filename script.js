@@ -1162,6 +1162,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const gpuUtilization = parseFloat(dom.gpuUtilizationRecommend.value) || 0.8;
         const quantWeights = dom.deployment.quant_weights.value;
         
+        // 检查当前选择的模型是否是盘古大模型
+        let isPanguModel = false;
+        const selectedIndex = dom.presetSelect.value;
+        if (selectedIndex !== '' && modelData[selectedIndex]) {
+            const selectedModel = modelData[selectedIndex];
+            isPanguModel = selectedModel.model_name && selectedModel.model_name.includes('盘古');
+        }
+        
         // 根据量化精度选择对应的算力类型
         let perfField;
         if (quantWeights === "2") {
@@ -1206,11 +1214,75 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         });
         
-        // 排序并获取前5个推荐
-        gpuWithCards
+        // 定义推荐的GPU型号优先级（优先推荐高性能和主流GPU）
+        const getRecommendationPriority = (gpu) => {
+            const key = `${gpu.vendor}_${gpu.model}`;
+            
+            // 如果是盘古模型，优先推荐昇腾显卡
+            if (isPanguModel) {
+                const panguPriorityMap = {
+                    'Huawei_Atlas 300I Duo 96GB': 1,
+                    'Huawei_Atlas 300I Duo 48GB': 2,
+                    'Huawei_Atlas 300I (Model 3010)': 3,
+                    'Huawei_Atlas 300T Pro': 4,
+                    'NVIDIA_H100 PCIe': 5  // 最后加一个英伟达显卡
+                };
+                return panguPriorityMap[key] || 999;
+            }
+            
+            // 默认优先级
+            const priorityMap = {
+                'NVIDIA_A100 PCIe': 1,
+                'NVIDIA_H100 PCIe': 2,
+                'AMD_Instinct MI300X': 3,
+                'Huawei_Atlas 300I Duo 96GB': 4,
+                '壁仞科技_BR100': 5,
+                '天数智芯_BI-V200': 6,
+                '寒武纪_思元590': 7,
+                'AMD_Instinct MI250X': 8,
+                'Huawei_Atlas 300I Duo 48GB': 9,
+                '摩尔线程_MTT S4000': 10
+            };
+            return priorityMap[key] || 999;  // 其他GPU排在最后
+        };
+        
+        // 混合推荐策略：优先推荐指定的GPU型号
+        const recommendedGpus = gpuWithCards
             .filter(gpu => gpu.supportsQuantization)
-            .sort((a, b) => a.totalCards - b.totalCards || b.vram - a.vram)
-            .slice(0, 5)
+            .sort((a, b) => {
+                const priorityA = getRecommendationPriority(a);
+                const priorityB = getRecommendationPriority(b);
+                
+                // 如果都是优先推荐的GPU，按优先级排序
+                if (priorityA !== 999 && priorityB !== 999) {
+                    return priorityA - priorityB;
+                }
+                
+                // 如果只有一个是优先推荐的GPU
+                if (priorityA !== 999) return -1;
+                if (priorityB !== 999) return 1;
+                
+                // 都不是优先推荐的GPU，按厂商和性能排序
+                const getVendorPriority = (vendor) => {
+                    if (vendor === 'NVIDIA') return 0;
+                    if (vendor === 'AMD') return 1;
+                    if (vendor === 'Huawei') return 2;
+                    if (['壁仞科技', '天数智芯', '寒武纪', '摩尔线程', '海光'].includes(vendor)) return 3;
+                    return 4;
+                };
+                const vendorPriorityA = getVendorPriority(a.vendor);
+                const vendorPriorityB = getVendorPriority(b.vendor);
+                const vendorDiff = vendorPriorityA - vendorPriorityB;
+                if (vendorDiff !== 0) return vendorDiff;
+                
+                const cardsDiff = a.totalCards - b.totalCards;
+                if (cardsDiff !== 0) return cardsDiff;
+                
+                return b.vram - a.vram;
+            })
+            .slice(0, 5);
+        
+        recommendedGpus
             .forEach(gpu => {
                 const limitingFactor = gpu.vramCards >= gpu.computingCards ? "显存" : "算力";
                 const limitingClass = limitingFactor === "显存" ? "memory" : "computing";
