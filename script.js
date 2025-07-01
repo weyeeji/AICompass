@@ -352,9 +352,9 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.model.model_total_params.value = '';
         }
         
-        // 设置输入输出长度的初始值
-        dom.deployment.input_length.value = params.input_length || 512;
-        dom.deployment.output_length.value = params.output_length || 512;
+        // 设置输入输出长度的初始值，如果预设值过大则使用默认值1024
+        dom.deployment.input_length.value = (params.input_length && params.input_length <= 16384) ? params.input_length : 1024;
+        dom.deployment.output_length.value = (params.output_length && params.output_length <= 16384) ? params.output_length : 1024;
         
         // 更新界面
         updateInputOutputSliderLimits();
@@ -1165,8 +1165,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // 根据量化精度选择对应的算力类型
         let perfField;
         if (quantWeights === "2") {
-            // FP16/BF16
-            perfField = "perf_bf16";
+            // 区分FP16和BF16
+            const selectedText = dom.deployment.quant_weights.selectedOptions[0].text;
+            if (selectedText === "FP16") {
+                perfField = "perf_fp16";
+            } else if (selectedText === "BF16") {
+                perfField = "perf_bf16";
+            } else {
+                perfField = "perf_bf16"; // 默认使用BF16
+            }
         } else if (quantWeights === "1" && dom.deployment.quant_weights.selectedOptions[0].text === "FP8") {
             perfField = "perf_fp8";
         } else if (quantWeights === "1" && dom.deployment.quant_weights.selectedOptions[0].text === "INT8") {
@@ -1241,8 +1248,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 根据量化精度选择对应的算力类型
                 let perfField;
                 if (quantWeights === "2") {
-                    // FP16/BF16
-                    perfField = "perf_bf16";
+                    // 区分FP16和BF16
+                    const selectedText = dom.deployment.quant_weights.selectedOptions[0].text;
+                    if (selectedText === "FP16") {
+                        perfField = "perf_fp16";
+                    } else if (selectedText === "BF16") {
+                        perfField = "perf_bf16";
+                    } else {
+                        perfField = "perf_bf16"; // 默认使用BF16
+                    }
                 } else if (quantWeights === "1" && dom.deployment.quant_weights.selectedOptions[0].text === "FP8") {
                     perfField = "perf_fp8";
                 } else if (quantWeights === "1" && dom.deployment.quant_weights.selectedOptions[0].text === "INT8") {
@@ -1299,8 +1313,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // 根据量化精度选择对应的输入元素
         let customPerf;
         if (quantWeights === "2") {
-            // FP16/BF16
-            customPerf = parseFloat(quantText === "FP16" ? dom.customFp16.value : dom.customBf16.value);
+            // 区分FP16和BF16
+            if (quantText === "FP16") {
+                customPerf = parseFloat(dom.customFp16.value);
+            } else if (quantText === "BF16") {
+                customPerf = parseFloat(dom.customBf16.value);
+            } else {
+                // 默认使用BF16
+                customPerf = parseFloat(dom.customBf16.value);
+            }
         } else if (quantWeights === "1" && quantText === "FP8") {
             customPerf = parseFloat(dom.customFp8.value);
         } else if (quantWeights === "1" && quantText === "INT8") {
