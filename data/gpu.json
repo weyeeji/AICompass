@@ -1,15 +1,87 @@
 [
   {
-    "vendor": "NVIDIA",
-    "model": "H100 SXM",
-    "vram": 80,
-    "perf_fp16": 989,
-    "perf_bf16": 989,
-    "perf_fp8": 1979,
-    "perf_int8": 1979,
-    "perf_int4": 3958,
-    "interconnect_bw": 900,
-    "memory_bw": 3350
+    "vendor": "Huawei",
+    "model": "Atlas 300I (Model 3010)",
+    "vram": 32,
+    "perf_fp16": 32,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 64,
+    "perf_int4": null,
+    "interconnect_bw": 15.75,
+    "memory_bw": 204.8
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300I Duo 48GB",
+    "vram": 48,
+    "perf_fp16": 140,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 280,
+    "perf_int4": null,
+    "interconnect_bw": 64,
+    "memory_bw": 408
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300I Duo 96GB",
+    "vram": 96,
+    "perf_fp16": 140,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 280,
+    "perf_int4": null,
+    "interconnect_bw": 64,
+    "memory_bw": 408
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300I Pro",
+    "vram": 24,
+    "perf_fp16": 70,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 140,
+    "perf_int4": null,
+    "interconnect_bw": 64,
+    "memory_bw": 204.8
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300T",
+    "vram": 16,
+    "perf_fp16": 280,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 560,
+    "perf_int4": null,
+    "interconnect_bw": 200,
+    "memory_bw": 204.8
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300T A2",
+    "vram": 32,
+    "perf_fp16": 280,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 560,
+    "perf_int4": null,
+    "interconnect_bw": 200,
+    "memory_bw": 1408
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300T Pro",
+    "vram": 16,
+    "perf_fp16": 280,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 560,
+    "perf_int4": null,
+    "interconnect_bw": 200,
+    "memory_bw": 204.8
   },
   {
     "vendor": "NVIDIA",
@@ -25,15 +97,27 @@
   },
   {
     "vendor": "NVIDIA",
-    "model": "H200 SXM",
-    "vram": 141,
-    "perf_fp16": 1110,
-    "perf_bf16": 1110,
-    "perf_fp8": 2220,
-    "perf_int8": 2220,
-    "perf_int4": 4440,
+    "model": "H100 SXM",
+    "vram": 80,
+    "perf_fp16": 989,
+    "perf_bf16": 989,
+    "perf_fp8": 1979,
+    "perf_int8": 1979,
+    "perf_int4": 3958,
     "interconnect_bw": 900,
-    "memory_bw": 4800
+    "memory_bw": 3350
+  },
+  {
+    "vendor": "NVIDIA",
+    "model": "RTX 6000 Ada",
+    "vram": 48,
+    "perf_fp16": 91.1,
+    "perf_bf16": 91.1,
+    "perf_fp8": 182.2,
+    "perf_int8": 182.2,
+    "perf_int4": 364.4,
+    "interconnect_bw": 32,
+    "memory_bw": 960
   },
   {
     "vendor": "NVIDIA",
@@ -94,18 +178,6 @@
     "perf_int4": 362,
     "interconnect_bw": 100,
     "memory_bw": 864
-  },
-  {
-    "vendor": "NVIDIA",
-    "model": "RTX 6000 Ada",
-    "vram": 48,
-    "perf_fp16": 91.1,
-    "perf_bf16": 91.1,
-    "perf_fp8": 182.2,
-    "perf_int8": 182.2,
-    "perf_int4": 364.4,
-    "interconnect_bw": 32,
-    "memory_bw": 960
   },
   {
     "vendor": "NVIDIA",
@@ -394,89 +466,5 @@
     "perf_int4": 1024,
     "interconnect_bw": 300,
     "memory_bw": 1800
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300T",
-    "vram": 16,
-    "perf_fp16": 280,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 560,
-    "perf_int4": null,
-    "interconnect_bw": 200,
-    "memory_bw": 204.8
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300T A2",
-    "vram": 32,
-    "perf_fp16": 280,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 560,
-    "perf_int4": null,
-    "interconnect_bw": 200,
-    "memory_bw": 1408
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300T Pro",
-    "vram": 16,
-    "perf_fp16": 280,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 560,
-    "perf_int4": null,
-    "interconnect_bw": 200,
-    "memory_bw": 204.8
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300I (Model 3010)",
-    "vram": 32,
-    "perf_fp16": 32,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 64,
-    "perf_int4": null,
-    "interconnect_bw": 15.75,
-    "memory_bw": 204.8
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300I Duo",
-    "vram": 48,
-    "perf_fp16": 140,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 280,
-    "perf_int4": null,
-    "interconnect_bw": 64,
-    "memory_bw": 408
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300I Duo ",
-    "vram": 96,
-    "perf_fp16": 140,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 280,
-    "perf_int4": null,
-    "interconnect_bw": 64,
-    "memory_bw": 408
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300I Pro",
-    "vram": 24,
-    "perf_fp16": 70,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 140,
-    "perf_int4": null,
-    "interconnect_bw": 64,
-    "memory_bw": 204.8
   }
 ]
