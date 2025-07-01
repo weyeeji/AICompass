@@ -539,12 +539,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const bytes_per_activation = parseFloat(p.quant_activations) || 2;
         
         // 激活值经验因子
-        const DENSE_ACTIVATION_FACTOR = 18;  // Dense模型激活值因子
-        const LLM_ACTIVATION_FACTOR = 24;    // 多模态中LLM部分激活值因子
-        const MOE_SHARED_ACTIVATION_FACTOR = 4;  // MoE共享部分激活值因子
-        const MOE_EXPERT_ACTIVATION_FACTOR = 2;  // MoE专家部分激活值因子
-        const VISION_ACTIVATION_FACTOR = 4.0;    // 视觉模态激活值因子
-        const AUDIO_ACTIVATION_FACTOR = 3.0;     // 音频模态激活值因子
+        const DENSE_ACTIVATION_FACTOR = 4;  // Dense模型激活值因子
+        const LLM_ACTIVATION_FACTOR = 1;    // 多模态中LLM部分激活值因子
+        const MOE_SHARED_ACTIVATION_FACTOR = 1;  // MoE共享部分激活值因子
+        const MOE_EXPERT_ACTIVATION_FACTOR = 1;  // MoE专家部分激活值因子
+        const VISION_ACTIVATION_FACTOR = 1;    // 视觉模态激活值因子
+        const AUDIO_ACTIVATION_FACTOR = 1;     // 音频模态激活值因子
         
         // 多模态token因子
         const VISION_TOKEN_FACTOR = 1.0;  // 视觉token对KV Cache的影响因子
