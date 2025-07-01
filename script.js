@@ -1162,6 +1162,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const gpuUtilization = parseFloat(dom.gpuUtilizationRecommend.value) || 0.8;
         const quantWeights = dom.deployment.quant_weights.value;
         
+        // 检查当前选择的模型是否是盘古大模型
+        let isPanguModel = false;
+        const selectedIndex = dom.presetSelect.value;
+        if (selectedIndex !== '' && modelData[selectedIndex]) {
+            const selectedModel = modelData[selectedIndex];
+            isPanguModel = selectedModel.model_name && selectedModel.model_name.includes('盘古');
+        }
+        
         // 根据量化精度选择对应的算力类型
         let perfField;
         if (quantWeights === "2") {
@@ -1209,6 +1217,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // 定义推荐的GPU型号优先级（优先推荐高性能和主流GPU）
         const getRecommendationPriority = (gpu) => {
             const key = `${gpu.vendor}_${gpu.model}`;
+            
+            // 如果是盘古模型，优先推荐昇腾显卡
+            if (isPanguModel) {
+                const panguPriorityMap = {
+                    'Huawei_Atlas 300I Duo 96GB': 1,
+                    'Huawei_Atlas 300I Duo 48GB': 2,
+                    'Huawei_Atlas 300I (Model 3010)': 3,
+                    'Huawei_Atlas 300T Pro': 4,
+                    'NVIDIA_H100 PCIe': 5  // 最后加一个英伟达显卡
+                };
+                return panguPriorityMap[key] || 999;
+            }
+            
+            // 默认优先级
             const priorityMap = {
                 'NVIDIA_A100 PCIe': 1,
                 'NVIDIA_H100 PCIe': 2,
