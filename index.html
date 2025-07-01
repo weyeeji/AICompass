@@ -35,7 +35,7 @@
                         <div id="preset-model-select-group" class="input-group">
                             <label for="preset-model-select">预设模型</label>
                             <select id="preset-model-select"></select>
-                            <span class="help-icon">? <span class="tooltip">选择社区主流模型，将自动填充参数。</span></span>
+                            <span class="help-icon">? <span class="tooltip">选择社区主流模型，将自动填充参数</span></span>
                         </div>
                         <fieldset>
                             <legend>🧠 模型参数</legend>
@@ -46,68 +46,68 @@
                                     <option value="MoE">MoE(混合专家)</option>
                                     <option value="Multimodal">Multimodal(多模态)</option>
                                 </select>
-                                <span class="help-icon">? <span class="tooltip">Dense: 标准Transformer架构。<br>MoE: 包含多个专家网络的架构。<br>Multimodal: 能处理多种类型输入的模型。</span></span>
+                                <span class="help-icon">? <span class="tooltip">Dense: 标准Transformer架构<br>MoE: 包含多个专家网络的架构<br>Multimodal: 能处理多种模态输入的模型</span></span>
                             </div>
                             <div class="input-group">
                                 <label for="hidden-size">隐藏层维度</label>
                                 <input type="number" id="hidden-size" placeholder="例如：4096">
-                                <span class="help-icon">? <span class="tooltip">模型中隐藏层的维度大小 (hidden_size)。</span></span>
+                                <span class="help-icon">? <span class="tooltip">模型中隐藏层的维度大小 (hidden_size)</span></span>
                             </div>
                             <div class="input-group">
                                 <label for="num-hidden-layers">模型层数</label>
                                 <input type="number" id="num-hidden-layers" placeholder="例如：32">
-                                <span class="help-icon">? <span class="tooltip">模型中Transformer Block的层数 (num_hidden_layers)。</span></span>
+                                <span class="help-icon">? <span class="tooltip">模型中Transformer Block的层数 (num_hidden_layers)</span></span>
                             </div>
                              <div class="input-group">
                                 <label for="num-attention-heads">注意力头数</label>
                                 <input type="number" id="num-attention-heads" placeholder="例如：32">
-                                <span class="help-icon">? <span class="tooltip">多头注意力机制中的头的数量 (num_attention_heads)。</span></span>
+                                <span class="help-icon">? <span class="tooltip">多头注意力机制中的头的数量 (num_attention_heads)</span></span>
                             </div>
                              <div class="input-group">
                                 <label for="num-key-value-heads">KV头数</label>
                                 <input type="number" id="num-key-value-heads" placeholder="例如：8">
-                                <span class="help-icon">? <span class="tooltip">用于GQA/MQA的Key/Value头的数量 (num_key_value_heads)。</span></span>
+                                <span class="help-icon">? <span class="tooltip">用于GQA/MQA的Key/Value头的数量 (num_key_value_heads)</span></span>
                             </div>
                              <div class="input-group">
                                 <label for="vocab-size">词汇表大小</label>
                                 <input type="number" id="vocab-size" placeholder="例如：32000">
-                                <span class="help-icon">? <span class="tooltip">模型词汇表的大小 (vocab_size)。</span></span>
+                                <span class="help-icon">? <span class="tooltip">模型词汇表的大小 (vocab_size)</span></span>
                             </div>
                              <div class="input-group">
                                 <label for="max-position-embeddings">最大上下文长度</label>
                                 <input type="number" id="max-position-embeddings" placeholder="例如：4096">
-                                <span class="help-icon">? <span class="tooltip">模型支持的最大序列长度 (max_position_embeddings)。</span></span>
+                                <span class="help-icon">? <span class="tooltip">模型支持的最大序列长度 (max_position_embeddings)</span></span>
                             </div>
                              <div id="dense-params" class="input-group">
                                 <label for="model-total-params">总/基础参数(B)</label>
                                 <input type="number" id="model-total-params" placeholder="例如：8 (十亿)">
-                                <span class="help-icon">? <span class="tooltip">对于Dense模型，这是总参数量。<br>对于Multimodal模型，这是LLM基础参数量。<br>单位：十亿(Billion)。</span></span>
+                                <span class="help-icon">? <span class="tooltip">Dense模型为总参数量<br>其他模型为LLM基础参数量<br>单位：十亿(Billion)</span></span>
                             </div>
                             <div id="moe-params" class="hidden">
                                 <div class="input-group">
                                     <label for="moe-total-params">模型总参数(B)</label>
-                                    <input type="number" id="moe-total-params" placeholder="例如：46.7 (十亿)">
-                                    <span class="help-icon">? <span class="tooltip">MoE模型的总参数量，包括共享参数和所有专家参数，单位十亿(B)。</span></span>
+                                    <input type="number" id="moe-total-params" placeholder="例如：46.7 (B)">
+                                    <span class="help-icon">? <span class="tooltip">MoE模型的总参数量，包括共享参数和所有专家参数，单位：十亿(Billion)</span></span>
                                 </div>
                                 <div class="input-group">
                                     <label for="expert-params-per-expert">单个专家参数(B)</label>
-                                    <input type="number" id="expert-params-per-expert" placeholder="例如：4.5 (十亿)">
-                                    <span class="help-icon">? <span class="tooltip">每个专家的参数量，单位十亿(B)。</span></span>
+                                    <input type="number" id="expert-params-per-expert" placeholder="例如：4.5 (B)">
+                                    <span class="help-icon">? <span class="tooltip">每个专家的参数量，单位：十亿(Billion)</span></span>
                                 </div>
                                 <div class="input-group">
                                     <label for="intermediate-size">专家中间层维度</label>
                                     <input type="number" id="intermediate-size" placeholder="例如：14336">
-                                    <span class="help-icon">? <span class="tooltip">MoE专家网络中FFN的中间层维度。</span></span>
+                                    <span class="help-icon">? <span class="tooltip">MoE专家网络中FFN的中间层维度</span></span>
                                 </div>
                                 <div class="input-group">
                                     <label for="num-local-experts">专家总数</label>
                                     <input type="number" id="num-local-experts" placeholder="例如：8">
-                                    <span class="help-icon">? <span class="tooltip">每个MoE层包含的专家总数。</span></span>
+                                    <span class="help-icon">? <span class="tooltip">每个MoE层包含的专家总数</span></span>
                                 </div>
                                 <div class="input-group">
                                     <label for="num-experts-per-tok">激活专家数</label>
                                     <input type="number" id="num-experts-per-tok" placeholder="例如：2">
-                                    <span class="help-icon">? <span class="tooltip">每个Token激活的专家数量。</span></span>
+                                    <span class="help-icon">? <span class="tooltip">每个Token激活的专家数量</span></span>
                                 </div>
                             </div>
                             <div id="multimodal-params" class="hidden">
@@ -119,8 +119,8 @@
                                     <div id="vision-modal-params">
                                         <div class="input-group">
                                             <label for="vision-params">视觉模态参数(B)</label>
-                                            <input type="number" id="vision-params" placeholder="例如：0.3 (十亿)">
-                                            <span class="help-icon">? <span class="tooltip">视觉模态的总参数量（包括编码器和投影层），单位十亿(B)。</span></span>
+                                            <input type="number" id="vision-params" placeholder="例如：0.3（B）">
+                                            <span class="help-icon">? <span class="tooltip">视觉模态的总参数量（包括编码器和投影层），单位：十亿(Billion)</span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -133,8 +133,8 @@
                                     <div id="audio-modal-params" class="hidden">
                                         <div class="input-group">
                                             <label for="audio-params">语音模态参数(B)</label>
-                                            <input type="number" id="audio-params" placeholder="例如：0.1 (十亿)">
-                                            <span class="help-icon">? <span class="tooltip">语音模态的总参数量（包括编码器和投影层），单位十亿(B)。</span></span>
+                                            <input type="number" id="audio-params" placeholder="例如：0.1 (B)">
+                                            <span class="help-icon">? <span class="tooltip">语音模态的总参数量（包括编码器和投影层），单位：十亿(Billion)</span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -151,7 +151,7 @@
                                     <option value="1">INT8</option>
                                     <option value="0.5">INT4</option>
                                 </select>
-                                <span class="help-icon">? <span class="tooltip">模型权重的量化精度。</span></span>
+                                <span class="help-icon">? <span class="tooltip">模型权重的量化精度</span></span>
                             </div>
                             <div class="input-group">
                                 <label for="quant-kvcache">KV Cache 量化方案</label>
@@ -162,7 +162,7 @@
                                     <option value="1">INT8</option>
                                     <option value="0.5">INT4</option>
                                 </select>
-                                <span class="help-icon">? <span class="tooltip">KV Cache的量化精度。</span></span>
+                                <span class="help-icon">? <span class="tooltip">KV Cache的量化精度</span></span>
                             </div>
                              <div class="input-group">
                                 <label for="quant-activations">激活值 量化方案</label>
@@ -173,7 +173,7 @@
                                     <option value="1">INT8</option>
                                     <option value="0.5">INT4</option>
                                 </select>
-                                 <span class="help-icon">? <span class="tooltip">中间激活值的量化精度（主要影响预填充阶段）。</span></span>
+                                 <span class="help-icon">? <span class="tooltip">激活值的量化精度</span></span>
                             </div>
                             <div class="slider-group">
                                 <label for="input-length">输入长度: <span id="input-length-value">512</span></label>
@@ -217,7 +217,7 @@
                             </div>
                             <div class="slider-group">
                                 <label for="batch-size">并发量(Batch Size): <span id="batch-size-value">4</span></label>
-                                <input type="range" id="batch-size" min="1" max="512" step="1" value="4" list="concurrency-ticks">
+                                <input type="range" id="batch-size" min="1" max="256" step="1" value="4" list="concurrency-ticks">
                                 <datalist id="concurrency-ticks">
                                     <option value="1"></option>
                                     <option value="2"></option>
@@ -228,14 +228,13 @@
                                     <option value="64"></option>
                                     <option value="128"></option>
                                     <option value="256"></option>
-                                    <option value="512"></option>
                                 </datalist>
                                 <div class="slider-labels" id="batch-size-labels"></div>
                             </div>
                             <div class="input-group">
                                 <label for="overhead-ratio">额外开销比例</label>
                                 <input type="number" id="overhead-ratio" step="0.01" value="0.03" data-default="0.03">
-                                <span class="help-icon">? <span class="tooltip">用于估算碎片、CUDA上下文等额外开销的比例，例如0.03代表3%。</span></span>
+                                <span class="help-icon">? <span class="tooltip">用于估算推理框架等额外开销的比例，例如0.03代表3%</span></span>
                             </div>
                             <!-- 多模态特定配置，仅在选择多模态模型时显示 -->
                             <div id="multimodal-inference-config" class="hidden">
@@ -245,24 +244,24 @@
                                     <div class="input-group">
                                         <label for="image-input-size">图像输入尺寸</label>
                                         <input type="number" id="image-input-size" placeholder="例如：336 (像素)">
-                                        <span class="help-icon">? <span class="tooltip">输入图像的分辨率（例如 336x336）。</span></span>
+                                        <span class="help-icon">? <span class="tooltip">输入图像的分辨率（例如 336x336）</span></span>
                                     </div>
                                     <div class="input-group">
                                         <label for="patch-size">图像Patch尺寸</label>
                                         <input type="number" id="patch-size" placeholder="例如：14 (像素)">
-                                        <span class="help-icon">? <span class="tooltip">图像切块（Patch）的大小。</span></span>
+                                        <span class="help-icon">? <span class="tooltip">图像切块（Patch）的大小</span></span>
                                     </div>
                                 </div>
                                 <div id="audio-inference-config" class="hidden">
                                     <div class="input-group">
                                         <label for="audio-input-length">音频输入长度(秒)</label>
                                         <input type="number" id="audio-input-length" placeholder="例如：30">
-                                        <span class="help-icon">? <span class="tooltip">输入音频的时长，单位秒。</span></span>
+                                        <span class="help-icon">? <span class="tooltip">输入音频的时长，单位：秒（s）</span></span>
                                     </div>
                                     <div class="input-group">
                                         <label for="audio-sample-rate">采样率(Hz)</label>
                                         <input type="number" id="audio-sample-rate" placeholder="例如：16000">
-                                        <span class="help-icon">? <span class="tooltip">音频采样率，单位Hz。</span></span>
+                                        <span class="help-icon">? <span class="tooltip">音频采样率，单位：赫兹（Hz）</span></span>
                                     </div>
                                 </div>
                             </div>
@@ -274,12 +273,12 @@
                             <div class="input-group">
                                 <label for="ttft">TTFT(ms)</label>
                                 <input type="number" id="ttft" placeholder="Time To First Token" value="500" data-default="500">
-                                <span class="help-icon">? <span class="tooltip">Time To First Token: 接收请求后，生成首个Token的时间。</span></span>
+                                <span class="help-icon">? <span class="tooltip">Time To First Token: 接收请求后，生成首个Token的时间</span></span>
                             </div>
                             <div class="input-group">
                                 <label for="tpot">TPOT(ms)</label>
                                 <input type="number" id="tpot" placeholder="Time Per Output Token" value="50" data-default="50">
-                                <span class="help-icon">? <span class="tooltip">Time Per Output Token: 生成后续每个Token的平均时间。</span></span>
+                                <span class="help-icon">? <span class="tooltip">Time Per Output Token: 生成后续每个Token的平均时间</span></span>
                             </div>
                             <div class="input-group">
                                 <label for="throughput-display">吞吐量</label>
@@ -313,7 +312,7 @@
                         <div class="input-group">
                             <label for="gpu-utilization-recommend">GPU利用率</label>
                             <input type="number" id="gpu-utilization-recommend" step="0.01" min="0.1" max="1" value="0.8" data-default="0.8">
-                            <span class="help-icon">? <span class="tooltip">GPU计算资源的实际利用率，通常在0.5-0.9之间。</span></span>
+                            <span class="help-icon">? <span class="tooltip">GPU计算资源的实际利用率，可通过测试程序得到</span></span>
                         </div>
                         <table class="hardware-table">
                             <thead><tr><th>厂商</th><th>型号</th><th>显存</th><th>显存带宽</th><th>预估卡数</th></tr></thead>
@@ -362,7 +361,7 @@
                         <div class="input-group">
                             <label for="gpu-utilization-custom">GPU利用率</label>
                             <input type="number" id="gpu-utilization-custom" step="0.01" min="0.1" max="1" value="0.8" data-default="0.8">
-                            <span class="help-icon">? <span class="tooltip">GPU计算资源的实际利用率，通常在0.5-0.9之间。</span></span>
+                            <span class="help-icon">? <span class="tooltip">GPU计算资源的实际利用率，可通过测试程序得到</span></span>
                         </div>
                         <div class="input-group">
                             <button id="calculate-custom-btn" class="action-btn">计算卡数</button>
