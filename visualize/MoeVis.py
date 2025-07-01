@@ -12,7 +12,7 @@ if not os.path.exists('pic'):
     os.makedirs('pic')
 
 # 读取CSV文件 - 请替换为实际的结果文件名
-df = pd.read_csv('results/Mixtral-8x7B-v0.1_memory_benchmark_20250629_215717.csv')
+df = pd.read_csv('results\Mixtral-8x7B-v0.1_memory_benchmark_20250629_215717.csv')
 
 # 定义颜色 - 使用论文风格的颜色
 colors = {

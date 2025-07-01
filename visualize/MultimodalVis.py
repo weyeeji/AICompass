@@ -12,7 +12,7 @@ if not os.path.exists('pic'):
     os.makedirs('pic')
 
 # 读取CSV文件 - 请替换为实际的结果文件名
-df = pd.read_csv('/home/jwy/AICompass/results/llava-1.5-7b-hf_memory_benchmark_20250630_001050.csv')
+df = pd.read_csv('results\llava-1.5-7b-hf_memory_benchmark_20250630_235249.csv')
 
 # 定义颜色 - 使用论文风格的颜色
 colors = {

@@ -541,8 +541,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 激活值经验因子
         const DENSE_ACTIVATION_FACTOR = 4;  // Dense模型激活值因子
         const LLM_ACTIVATION_FACTOR = 1;    // 多模态中LLM部分激活值因子
-        const MOE_SHARED_ACTIVATION_FACTOR = 1;  // MoE共享部分激活值因子
-        const MOE_EXPERT_ACTIVATION_FACTOR = 1;  // MoE专家部分激活值因子
+        const MOE_SHARED_ACTIVATION_FACTOR = 4;  // MoE共享部分激活值因子
+        const MOE_EXPERT_ACTIVATION_FACTOR = 4;  // MoE专家部分激活值因子
         const VISION_ACTIVATION_FACTOR = 1;    // 视觉模态激活值因子
         const AUDIO_ACTIVATION_FACTOR = 1;     // 音频模态激活值因子
         

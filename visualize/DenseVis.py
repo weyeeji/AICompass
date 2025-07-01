@@ -5,14 +5,14 @@ import os
 from matplotlib.font_manager import FontProperties
 import matplotlib.patches as mpatches
 
-model_name = 'llama3-8B'
+model_name = 'llama2-13B'
 
 # 创建pic文件夹（如果不存在）
 if not os.path.exists('pic'):
     os.makedirs('pic')
 
 # 读取CSV文件
-df = pd.read_csv('results/llama3-8B_memory_benchmark_20250629_204815.csv')
+df = pd.read_csv('results\Llama-2-13b_memory_benchmark_20250630_210827.csv')
 
 # 定义颜色 - 使用论文风格的颜色
 colors = {
