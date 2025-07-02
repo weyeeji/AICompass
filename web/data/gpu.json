@@ -1,20 +1,8 @@
 [
   {
     "vendor": "Huawei",
-    "model": "Atlas 300I (Model 3010)",
-    "vram": 32,
-    "perf_fp16": 32,
-    "perf_bf16": null,
-    "perf_fp8": null,
-    "perf_int8": 64,
-    "perf_int4": null,
-    "interconnect_bw": 15.75,
-    "memory_bw": 204.8
-  },
-  {
-    "vendor": "Huawei",
-    "model": "Atlas 300I Duo 48GB",
-    "vram": 48,
+    "model": "Atlas 300I Duo 96GB",
+    "vram": 96,
     "perf_fp16": 140,
     "perf_bf16": null,
     "perf_fp8": null,
@@ -25,8 +13,8 @@
   },
   {
     "vendor": "Huawei",
-    "model": "Atlas 300I Duo 96GB",
-    "vram": 96,
+    "model": "Atlas 300I Duo 48GB",
+    "vram": 48,
     "perf_fp16": 140,
     "perf_bf16": null,
     "perf_fp8": null,
@@ -45,6 +33,18 @@
     "perf_int8": 140,
     "perf_int4": null,
     "interconnect_bw": 64,
+    "memory_bw": 204.8
+  },
+  {
+    "vendor": "Huawei",
+    "model": "Atlas 300I (Model 3010)",
+    "vram": 32,
+    "perf_fp16": 32,
+    "perf_bf16": null,
+    "perf_fp8": null,
+    "perf_int8": 64,
+    "perf_int4": null,
+    "interconnect_bw": 15.75,
     "memory_bw": 204.8
   },
   {
