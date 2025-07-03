@@ -127,7 +127,6 @@ def run_compute_benchmarks(dtypes, device):
     
     results = {}
     
-    # 使用 partial 将维度参数绑定到准备函数上，保持接口干净
     prepare_func = partial(prepare_matmul_inputs, m=GEMM_M, k=GEMM_K, n=GEMM_N)
 
     for name, dtype in dtypes.items():
@@ -135,7 +134,6 @@ def run_compute_benchmarks(dtypes, device):
         results[key] = []
         
         # 对低精度类型进行特殊处理
-        # 标准 torch.matmul 不直接支持这些类型的通用计算
         if dtype in [torch.int8, torch.float8_e4m3fn] or name == "int4":
             print(f"--- Testing: GEMM ({name}) ---")
             print("Skipping: Standard torch.matmul lacks support for this dtype.")
@@ -166,7 +164,6 @@ def run_memory_benchmarks(dtypes, device):
         key = (name, 'layernorm')
         results[key] = []
 
-        # LayerNorm 通常不支持int或fp8类型
         if 'int' in name or 'fp8' in name:
             print(f"--- Testing: Layer Normalization ({name}) ---")
             print(f"Skipping: LayerNorm is not typically supported for {name} dtype.\n")
@@ -198,12 +195,11 @@ if __name__ == "__main__":
     print(f"Configuration: Runs={NUM_BENCHMARK_RUNS}, Warmup={WARMUP_ITERS}, Test={TEST_ITERS}")
     
     # 定义所有需要测试的精度类型
-    # 对于不存在的dtype，使用字符串作为占位符以便优雅处理
     dtypes_to_test = {
         "fp32": torch.float32,
         "fp16": torch.float16,
         "bf16": torch.bfloat16,
-        "fp8_e4m3": getattr(torch, 'float8_e4m3fn', "N/A"), # 检查torch版本是否支持
+        "fp8_e4m3": getattr(torch, 'float8_e4m3fn', "N/A"),
         "int8": torch.int8,
         "int4": "N/A", # torch中无原生int4, 作为占位符
     }

@@ -506,7 +506,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const computingPower = calculateComputingPower();
             updateHardwareRecommendations(vramUsage.total, computingPower);
             updateSpecificGpuCardCount(vramUsage.total, computingPower);
-            // 注意：这里不再自动更新自定义硬件的卡数，而是等待用户点击计算按钮
         }
     }
 
@@ -565,8 +564,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     kv_cache_bytes = p.batch_size * seq_length * p.num_hidden_layers * 2 * kv_heads * head_dim * bytes_per_kv;
                 }
                 
-                // 激活值计算：使用经验因子，通常为hidden_size的12-24倍
-                // DENSE_ACTIVATION_FACTOR设为18，表示激活值大约是hidden_size的18倍
                 activations_bytes = p.batch_size * seq_length * p.hidden_size * DENSE_ACTIVATION_FACTOR * bytes_per_activation;
                 break;
                 
@@ -612,8 +609,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 // MoE激活值计算分两部分：
-                // 1. 共享部分激活值：与Dense模型类似，但因子较小
-                // 2. 专家部分激活值：考虑每个token激活的专家数量和专家网络的中间层维度
+                // 1. 共享部分激活值
+                // 2. 专家部分激活值
                 
                 activations_bytes = p.batch_size * seq_length * p.hidden_size * MOE_SHARED_ACTIVATION_FACTOR * bytes_per_activation + 
                                    p.batch_size * seq_length * Math.max(p.num_experts_per_tok, 1) * Math.max(p.intermediate_size, p.hidden_size) * MOE_EXPERT_ACTIVATION_FACTOR * bytes_per_activation;
@@ -657,7 +654,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 如果启用语音模态，添加音频序列长度（简化估算）
                 if (p.has_audio_modal && mm_params.audio_input_length > 0) {
-                    // 假设每秒音频产生约20个token
                     const audio_tokens = mm_params.audio_input_length * 20;
                     total_seq_len += audio_tokens * AUDIO_TOKEN_FACTOR;
                 }
@@ -683,7 +679,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 语音模态激活值（如果启用）
                 if (p.has_audio_modal && mm_params.audio_input_length > 0) {
-                    // 假设每秒音频产生约20个token
                     const audio_tokens = mm_params.audio_input_length * 20;
                     const audio_activations_bytes = p.batch_size * audio_tokens * p.hidden_size * AUDIO_ACTIVATION_FACTOR * bytes_per_activation;
                     total_activations_bytes += audio_activations_bytes;
@@ -833,14 +828,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = [baseWeightsGB];
             const colors = [getComputedStyle(document.documentElement).getPropertyValue('--chart-color-1').trim()];
             
-            // 如果有视觉模态
             if (has_vision_modal) {
                 labels.push('视觉权重');
                 data.push(visionWeightsGB);
                 colors.push(getComputedStyle(document.documentElement).getPropertyValue('--chart-color-6').trim());
             }
             
-            // 如果有语音模态
             if (has_audio_modal) {
                 labels.push('语音权重');
                 data.push(audioWeightsGB);
@@ -966,25 +959,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const quantWeights = parseFloat(dom.deployment.quant_weights.value) || 2;
         const quantActivations = parseFloat(dom.deployment.quant_activations.value) || 2;
         
-        // 基于业界共识的计算方法
-        // 参考：https://arxiv.org/abs/2203.15556, https://arxiv.org/abs/2104.04473
+        const BASE_FLOPS_PER_TOKEN = 12;
         
-        // 每个token的FLOPs计算基准 - 基于Transformer架构的共识估算
-        // 对于前向推理，每个token大约需要2 * 6 * h^2 的FLOPs，其中h是隐藏层大小
-        // 2表示矩阵乘法的乘加操作，6表示Transformer中的主要矩阵乘法数量
-        const BASE_FLOPS_PER_TOKEN = 12; // 基础系数
-        
-        // 模型规模系数 - 根据隐藏层大小和层数进行缩放
         const MODEL_SCALE_FACTOR = (p.hidden_size * p.num_hidden_layers) / 1e6;
         
-        // 注意力机制效率系数 - 考虑MHA vs MQA/GQA的差异
         const ATTENTION_EFFICIENCY = Math.max(p.num_key_value_heads, 1) / Math.max(p.num_attention_heads, 1);
         
-        // 批处理效率 - 考虑批处理大小带来的并行效率提升
         const BATCH_EFFICIENCY = 0.7 + 0.3 * Math.log10(Math.max(batch_size, 1)) / Math.log10(128);
         
-        // 量化精度系数 - 不同量化精度对算力的影响
-        const QUANT_COMPUTE_FACTOR = Math.pow(quantWeights, 0.5); // 平方根关系
+        const QUANT_COMPUTE_FACTOR = Math.pow(quantWeights, 0.5); 
         
         let required_flops = 0;
         
@@ -1105,17 +1088,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const mm_decode_compute_rate = mm_decode_flops_per_token * throughput;
                 
-                // 3. 模态处理算力 (一次性处理，不随token生成而变化)
+                // 3. 模态处理算力 
                 let modal_compute_rate = 0;
                 
-                // 视觉模态算力 (如果启用)
                 if (p.has_vision_modal) {
                     const vision_params = Math.max(p.vision_params, 0.01) * 1e9;
                     // 视觉模型的计算量与参数量和批处理大小成正比
                     modal_compute_rate += (vision_params / 1e12) * 0.05 * batch_size;
                 }
                 
-                // 音频模态算力 (如果启用)
                 if (p.has_audio_modal) {
                     const audio_params = Math.max(p.audio_params, 0.01) * 1e9;
                     // 音频模型的计算量与参数量和批处理大小成正比
@@ -1131,8 +1112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // 考虑显存带宽限制对算力的影响
-        // 显存带宽通常是高端GPU的瓶颈，特别是对于大型模型
-        const MEMORY_BW_FACTOR = 0.9; // 显存带宽利用率
+        const MEMORY_BW_FACTOR = 0.9; 
         
         // 考虑系统开销和其他因素
         const overhead_ratio = p.overhead_ratio;
@@ -1146,9 +1126,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return 0;
         }
         
-        // 应用一个全局校准因子，确保结果在合理范围内
-        // 这个因子是基于实际部署经验调整的
-        const GLOBAL_CALIBRATION = 0.01; // 全局校准因子
+        const GLOBAL_CALIBRATION = 0.01;
         return required_flops * GLOBAL_CALIBRATION;
     }
 
@@ -1173,7 +1151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // 根据量化精度选择对应的算力类型
         let perfField;
         if (quantWeights === "2") {
-            // 区分FP16和BF16
             const selectedText = dom.deployment.quant_weights.selectedOptions[0].text;
             if (selectedText === "FP16") {
                 perfField = "perf_fp16";
@@ -1296,7 +1273,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.hwRecommendations.innerHTML += row;
             });
         
-        // 如果没有支持当前量化精度的GPU
         if (!dom.hwRecommendations.innerHTML) {
             dom.hwRecommendations.innerHTML = `<tr><td colspan="5" class="not-supported">没有找到支持当前量化精度的GPU</td></tr>`;
         }
@@ -1421,7 +1397,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         dom.customCardsResult.innerHTML = `${totalCards} 张`;
         
-        // 调试信息
         console.log({
             requiredVram,
             requiredComputing,
@@ -1437,7 +1412,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     let simulationInterval = null;
-    let simulationInProgress = false; // 添加标志变量，跟踪模拟是否正在进行
+    let simulationInProgress = false; 
     const sampleText = "AICompass是一款模型对算力等效建模评估工具，专注于解决大模型（百亿至万亿参数）在多样化硬件平台上的显存占用预测与硬件配置推荐问题。区别于传统显存性能计算器，AICompass有如下的特色：\n1. 多模型精细建模​​：覆盖稠密模型、稀疏MoE架构及多模态模型的显存分项计算（权重/KV Cache/激活值等），突破传统工具仅支持单一模型的局限；\n2. 实测驱动高精度​​：通过设计算力/访存测试工具链（开源验证代码），实测显存预测误差≤5%，支持NVIDIA/昇腾/国产卡等异构硬件平台；\n3. 智能部署决策​​：结合用户设定的延迟目标（TTFT/TPOT），动态推荐满足SLO的最优卡数配置与量化方案。\n4. ​​成本优化显著​​：解决显存估算偏差、硬件选型盲目、部署成本过高三大痛点，为开发者提供经实测验证的一站式部署决策支持。";
     
     function startSimulation() {
@@ -1446,7 +1421,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resetSimulation();
         }
         
-        simulationInProgress = true; // 设置模拟进行中标志
+        simulationInProgress = true;
         
         // 使用TTFT和TPOT进行模拟
         let ttft = parseInt(dom.ttft.value);

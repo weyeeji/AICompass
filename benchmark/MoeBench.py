@@ -87,9 +87,8 @@ def run_inference_test(model, tokenizer, batch_size, input_length, output_length
             pass
     
     # 准备输入数据
-    # 根据目标token长度生成输入文本
-    words_per_token = 0.75  # 估计值：平均每个token约0.75个单词
-    chars_per_word = 5  # 估计值：平均每个单词约5个字符
+    words_per_token = 0.75
+    chars_per_word = 5
     target_chars = int(input_length / words_per_token * chars_per_word)
     
     # 生成足够长的输入文本
@@ -162,7 +161,7 @@ def run_inference_test(model, tokenizer, batch_size, input_length, output_length
     num_key_value_heads = getattr(model.config, 'num_key_value_heads', model.config.num_attention_heads)
     
     # 获取MoE相关配置
-    num_experts = getattr(model.config, 'num_local_experts', 8)  # Mixtral默认8个专家
+    num_experts = getattr(model.config, 'num_local_experts', 8)
     intermediate_size = getattr(model.config, 'intermediate_size', 4 * model.config.hidden_size)  # 中间层维度
     
     # 计算共享参数量和专家参数量
@@ -287,7 +286,6 @@ def main():
     if 'model_type' in config:
         model_type = config['model_type'].lower()
         if 'mixtral' in model_type:
-            # 对于Mixtral模型，估算参数量
             hidden_size = config['hidden_size']
             num_hidden_layers = config['num_hidden_layers']
             vocab_size = config['vocab_size']
@@ -323,7 +321,6 @@ def main():
             shared_parameters_count = total_parameters_count * 0.3  
             expert_parameters_count = total_parameters_count * 0.7  
     else:
-        # 如果没有model_type，使用默认值
         total_parameters_count = 46_000_000_000  
         shared_parameters_count = 13_000_000_000  
         expert_parameters_count = 33_000_000_000  

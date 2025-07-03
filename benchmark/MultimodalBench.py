@@ -111,12 +111,10 @@ def run_inference_test(model, tokenizer, processor, batch_size, input_length, ou
             pass
     
     # 准备输入数据 - 文本部分
-    # 根据目标token长度生成输入文本
-    words_per_token = 0.75  # 估计值：平均每个token约0.75个单词
-    chars_per_word = 5  # 估计值：平均每个单词约5个字符
+    words_per_token = 0.75 
+    chars_per_word = 5 
     target_chars = int(input_length / words_per_token * chars_per_word)
     
-    # 生成足够长的输入文本
     input_text = "Hello, how are you today? This is a test input for the language model. " * (target_chars // 100 + 1)
     
     # 使用分词器处理输入文本
@@ -205,10 +203,10 @@ def run_inference_test(model, tokenizer, processor, batch_size, input_length, ou
         else:
             llm_config = model.config
 
-    # 获取必要的配置值，提供默认值以防配置中不存在
-    hidden_size = getattr(llm_config, 'hidden_size', 4096)  # 默认值为Vicuna-7B的隐藏层大小
-    num_attention_heads = getattr(llm_config, 'num_attention_heads', 32)  # 默认值
-    num_hidden_layers = getattr(llm_config, 'num_hidden_layers', 32)  # 默认值
+    # 获取必要的配置值
+    hidden_size = getattr(llm_config, 'hidden_size', 4096) 
+    num_attention_heads = getattr(llm_config, 'num_attention_heads', 32)  
+    num_hidden_layers = getattr(llm_config, 'num_hidden_layers', 32)  
     num_key_value_heads = getattr(llm_config, 'num_key_value_heads', num_attention_heads)
 
     # 计算头维度
@@ -217,7 +215,7 @@ def run_inference_test(model, tokenizer, processor, batch_size, input_length, ou
     # 计算基础LLM、视觉和音频参数量
     base_params_count = base_parameters_count
     vision_params_count = vision_parameters_count
-    audio_params_count = 0  # LLaVA没有音频模态
+    audio_params_count = 0
 
     # 1. 基础LLM权重显存
     base_weights_theoretical_bytes = base_params_count * WEIGHT_QUANTIZATION_PRECISION
@@ -365,10 +363,10 @@ def main():
         
         # 从text_config获取LLM参数
         if text_config:
-            hidden_size = text_config.get('hidden_size', 4096)  # Vicuna-7B默认值
-            num_hidden_layers = text_config.get('num_hidden_layers', 32)  # Vicuna-7B默认值
+            hidden_size = text_config.get('hidden_size', 4096)  
+            num_hidden_layers = text_config.get('num_hidden_layers', 32) 
             vocab_size = text_config.get('vocab_size', 32000)
-            intermediate_size = text_config.get('intermediate_size', 11008)  # Vicuna-7B默认值
+            intermediate_size = text_config.get('intermediate_size', 11008)  
             
             # 估算LLM基础参数量
             # 嵌入层参数
@@ -385,7 +383,6 @@ def main():
             # LLM基础参数量
             base_parameters_count = embedding_params + all_layers_params + output_params
         else:
-            # 如果没有text_config，使用默认值
             base_parameters_count = 7_000_000_000  
         
         # 从vision_config获取视觉模型参数
@@ -412,10 +409,8 @@ def main():
             # 视觉模型总参数量
             vision_parameters_count = vision_embedding_params + vision_all_layers_params + vision_projection_params
         else:
-            # 如果没有vision_config，使用默认值
             vision_parameters_count = 300_000_000  
     else:
-        # 如果不是llava模型，使用默认值
         base_parameters_count = 7_000_000_000  
         vision_parameters_count = 300_000_000  
     

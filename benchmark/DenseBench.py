@@ -82,9 +82,8 @@ def run_inference_test(model, tokenizer, batch_size, input_length, output_length
             pass
     
     # 准备输入数据
-    # 根据目标token长度生成输入文本
-    words_per_token = 0.75  # 估计值：平均每个token约0.75个单词
-    chars_per_word = 5  # 估计值：平均每个单词约5个字符
+    words_per_token = 0.75
+    chars_per_word = 5
     target_chars = int(input_length / words_per_token * chars_per_word)
     
     # 生成足够长的输入文本
