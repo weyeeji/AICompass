@@ -1438,7 +1438,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let simulationInterval = null;
     let simulationInProgress = false; // 添加标志变量，跟踪模拟是否正在进行
-    const sampleText = "AICompass 是一个强大的模型算力评估工具。它通过对模型结构、部署配置和服务指标的综合分析，精确计算出所需的显存资源，并推荐合适的硬件配置...";
+    const sampleText = "AICompass是一款模型对算力等效建模评估工具，专注于解决大模型（百亿至万亿参数）在多样化硬件平台上的显存占用预测与硬件配置推荐问题。区别于传统显存性能计算器，AICompass有如下的特色：\n1. 多模型精细建模​​：覆盖稠密模型、稀疏MoE架构及多模态模型的显存分项计算（权重/KV Cache/激活值等），突破传统工具仅支持单一模型的局限；\n2. 实测驱动高精度​​：通过设计算力/访存测试工具链（开源验证代码），实测显存预测误差≤5%，支持NVIDIA/昇腾/国产卡等异构硬件平台；\n3. 智能部署决策​​：结合用户设定的延迟目标（TTFT/TPOT），动态推荐满足SLO的最优卡数配置与量化方案。\n4. ​​成本优化显著​​：解决显存估算偏差、硬件选型盲目、部署成本过高三大痛点，为开发者提供经实测验证的一站式部署决策支持。";
     
     function startSimulation() {
         // 如果模拟正在进行中，先停止它

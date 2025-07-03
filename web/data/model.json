@@ -20,26 +20,6 @@
     }
   },
   {
-    "model_type": "MoE",
-    "model_name": "DeepSeek-V3-0324",
-    "parameters": {
-      "model_total_params": 67100000000,
-      "expert_params_per_expert": 2620000000,
-      "shared_params": 14400000000,
-      "vocab_size": 129280,
-      "hidden_size": 7168,
-      "num_hidden_layers": 61,
-      "num_attention_heads": 128,
-      "num_key_value_heads": 128,
-      "intermediate_size": 18432,
-      "num_local_experts": 256,
-      "num_experts_per_tok": 8,
-      "max_position_embeddings": 163840,
-      "input_length": 163840,
-      "output_length": 163840
-    }
-  },
-  {
     "model_type": "Dense",
     "model_name": "DeepSeek-R1-Distill-Llama-70B",
     "parameters": {
@@ -134,9 +114,9 @@
     "model_type": "MoE",
     "model_name": "Llama-4-Scout-17B-16E",
     "parameters": {
-      "model_total_params": 17000000000,
-      "expert_params_per_expert": 8054000000,
-      "shared_params": 4880000000,
+      "model_total_params": 109000000000,
+      "expert_params_per_expert": 6440000000,
+      "shared_params": 6000000000,
       "vocab_size": 202048,
       "hidden_size": 5120,
       "num_hidden_layers": 48,
@@ -449,8 +429,8 @@
     "model_name": "Mixtral-8x7B",
     "parameters": {
       "model_total_params": 46700000000,
-      "expert_params_per_expert": 3775000000,
-      "shared_params": 1070000000,
+      "expert_params_per_expert": 5500000000,
+      "shared_params": 2700000000,
       "vocab_size": 32000,
       "hidden_size": 4096,
       "num_hidden_layers": 32,
@@ -469,8 +449,8 @@
     "model_name": "Mixtral-8x22B",
     "parameters": {
       "model_total_params": 141700000000,
-      "expert_params_per_expert": 14000000000,
-      "shared_params": 29700000000,
+      "expert_params_per_expert": 16000000000,
+      "shared_params": 13700000000,
       "vocab_size": 32768,
       "hidden_size": 6144,
       "num_hidden_layers": 56,
@@ -488,16 +468,16 @@
     "model_type": "MoE",
     "model_name": "Qwen1.5-MoE-A2.7B",
     "parameters": {
-      "model_total_params": 8100000000,
-      "expert_params_per_expert": 1350000000,
-      "shared_params": 2700000000,
+      "model_total_params": 14300000000,
+      "expert_params_per_expert": 210000000,
+      "shared_params": 896000000,
       "vocab_size": 151936,
       "hidden_size": 2048,
       "num_hidden_layers": 24,
       "num_attention_heads": 16,
       "num_key_value_heads": 16,
       "intermediate_size": 5632,
-      "num_local_experts": 60,
+      "num_local_experts": 64,
       "num_experts_per_tok": 4,
       "max_position_embeddings": 32768,
       "input_length": 2048,
